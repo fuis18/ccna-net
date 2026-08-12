@@ -1,16 +1,9 @@
-# Starlight Starter Kit: Basics
+# CCNA (Routers & Switches)
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+CCNA study guide organized into 5 modules: network fundamentals, switching, routing, wireless networks, and IP services.
+Built with [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/).
 
-```
-pnpm create astro@latest -- --template starlight
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+## Project Structure
 
 ```
 .
@@ -18,32 +11,46 @@ Inside of your Astro + Starlight project, you'll see the following folders and f
 ├── src/
 │   ├── assets/
 │   ├── content/
-│   │   └── docs/
+│   │   └── docs/            # Guide pages (.md, one per topic)
 │   └── content.config.ts
-├── astro.config.mjs
+├── astro.config.mjs          # Starlight config + base (/ccna-net/ in prod)
+├── .github/workflows/deploy.yml  # GitHub Pages deploy
 ├── package.json
 └── tsconfig.json
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+The `.md` files in `src/content/docs/` are exposed as site routes. Each chapter has its own folder with an `index.md` and the pages for its topics.
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+## Content Structure
 
-Static assets, like favicons, can be placed in the `public/` directory.
+```
+src/content/docs/
+├── index.md                       # Landing page
+├── 01-network-fundamentals/       # 1. Network Fundamentals
+├── 02-switching/                  # 2. Switching
+├── 03-routing/                    # 3. Routing
+├── 04-wireless-networks/          # 4. Wireless Networks (WLAN)
+└── 05-ip-services/                # 5. IP Services and Maintenance
+```
 
-## 🧞 Commands
+## Commands
 
-All commands are run from the root of the project, from a terminal:
+| Command          | Action                                     |
+| :--------------- | :----------------------------------------- |
+| `pnpm install`   | Installs dependencies                      |
+| `pnpm dev`       | Starts local dev server at `localhost:4321` |
+| `pnpm build`     | Builds production site to `./dist/`        |
+| `pnpm preview`   | Previews the build locally                 |
+| `pnpm astro ...` | Run Astro CLI commands (e.g. `astro check`) |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+## Deploy
 
-## 👀 Want to learn more?
+The site is automatically deployed to GitHub Pages via the workflow in `.github/workflows/deploy.yml`. It lives at `https://fuis18.is-a.dev/ccna-net/`, so `astro.config.mjs` defines:
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+```js
+base: process.env.NODE_ENV === 'production' ? '/ccna-net/' : '/',
+```
+
+## License
+
+See [LICENSE](./LICENSE).
