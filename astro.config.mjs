@@ -4,6 +4,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://fuis18.is-a.dev',
+	base: process.env.NODE_ENV === 'production' ? '/ccna-net/' : '/',
 	integrations: [
 		starlight({
 			title: 'CCNA (Routers & Switches)',
