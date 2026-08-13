@@ -33,8 +33,8 @@ Toda dirección tiene dos partes:
 
 - **Porción de host → comunicación directa.** Dos dispositivos con la misma porción de
   red se comunican directamente (sin router): buscan la MAC de destino y envían la
-  trama por el conmutador. Ejemplo: `192.168.10.5` puede hablar directo con
-  `192.168.10.7` porque ambos están en `192.168.10.0/24`.
+  trama por el conmutador. Ejemplo: una PC en `192.168.10.5` y una impresora de red
+  en `192.168.10.7` pueden hablar directo porque ambas están en 192.168.10.0/24.
 - **Porción de red → aislamiento.** Si las porciones de red difieren, son redes
   distintas y **no se comunican directamente**: cada una queda aislada de la otra. Para
   cruzar la frontera se necesita un **router** (la "puerta", que actúa como gateway).
@@ -64,6 +64,13 @@ En decimal, un octeto `255` son 8 bits de red y un `0` son 8 bits de host.
 > la **última** es la de **broadcast** (bits de host en uno). Las **intermedias** son
 > las direcciones de host utilizables.
 
+```
+Máscara:    255   .   255   .   255   .    0
+Significa: [FIJO] .  [FIJO] .  [FIJO] . [LIBRE]
+```
+
+Las 255 posibilidades están fijas como red o como host
+
 Por ejemplo, en `192.168.10.0/24`:
 
 - red `192.168.10.0`
@@ -71,6 +78,8 @@ Por ejemplo, en `192.168.10.0/24`:
 - hosts utilizables `192.168.10.1 – .254`.
 
 ## 2. Escalando: cambiar la máscara (CIDR)
+
+> Classless Inter-Domain Routing o Enrutamiento Interdominio Sin Clases
 
 "¿Y si una sola red no alcanza?" La cantidad de hosts la decide la máscara. Si quieres
 **más hosts**, usas una máscara con **menos bits de red** y más bits de host:
@@ -97,70 +106,93 @@ Ejemplo `/24`: `2^(32-24) - 2 = 2^8 - 2 = 254`.
 | /26     | 255.255.255.192 | 62           |
 | /30     | 255.255.255.252 | 2            |
 
-## 3. Dividir: subnetting
+Si a la red 192.168.10.0/24 se conectaran decenas de equipos más para usar la impresora,
+seguiría cabiendo sin cambiar de máscara: el problema, en ese caso, no sería de tamaño
+sino de organización — todos esos equipos verían el mismo tráfico y los mismos recursos
+compartidos, sin ningún aislamiento entre áreas. Eso es lo que resuelve el subnetting.
+
+## 3.1. Dividir: subnetting
 
 "¿Y si necesito **varias** redes (sedes, oficinas)?" Tomo una red grande y la parto en
 subredes más pequeñas. Para eso **robo bits** de la porción de host y los convierto en
 bits de red.
 
-```
-Subredes creadas   = 2^n        (n = bits de host robados)
-Hosts por subred   = 2^h - 2    (h = bits de host restantes)
-Prefijo            = 32 - h
-```
+### Caso 1: separar áreas del mismo tamaño
 
-### Tabla de referencia rápida
+**Situación:** la PC y la impresora conviven en `192.168.10.0/24` con el resto de la
+oficina. Hay 4 áreas, cada una con hasta 60 equipos, y hace falta que no vean los
+recursos de las demás.
 
-Relaciona los **bits de host (h)** con los **hosts útiles**, la **máscara** y el
-**paso/salto** entre subredes:
+**Razonamiento:** no se necesita más espacio (254 direcciones sobran, porque en total son 240),
+se necesita **partir** el que ya existe en 4 pedazos iguales, uno por área. Cada pedazo debe
+alcanzar para 60 equipos.
 
-| h (bits de host) | Hosts útiles (2^h - 2) | Prefijo (32-h) | Máscara de subred | Paso/Salto |
-| :--------------- | :--------------------- | :------------- | :---------------- | :--------- |
-| 13               | 8190                   | /19            | 255.255.224.0     | 32         |
-| 12               | 4094                   | /20            | 255.255.240.0     | 16         |
-| 11               | 2046                   | /21            | 255.255.248.0     | 8          |
-| 10               | 1022                   | /22            | 255.255.252.0     | 4          |
-| 2                | 2                      | /30            | 255.255.255.252   | 4          |
+**Procedimiento:**
 
-El **paso/salto** es la distancia entre subredes consecutivas, medida en el octeto
-donde la máscara no es ni 255 ni 0: `256 - valor de ese octeto`.
+- Hosts necesarios: 60, más 2 reservados (red y broadcast) → 62.
+- Bloque más próximo: la primera potencia de 2 que alcanza para 62 es **64** (2⁶).
+- Ese bloque de 64 direcciones equivale a **6 bits de host** (2⁶ = 64).
+- Prefijo → `32 - 6 = /26`.
+- Máscara: el bit límite cae en el último octeto → `256 - 64 = 192` → `255.255.255.192`.
+- Salto: la distancia entre el inicio de una subred y el de la siguiente es el mismo tamaño del bloque → `256 - 192 = 64`. Por eso las subredes arrancan en `.0`, `.64`, `.128`, `.192` — siempre saltando de 64 en 64 en el último octeto.
 
-```
-256 - 224 = 32   256 - 240 = 16   256 - 248 = 8   256 - 252 = 4
-```
+**Resultado:**
 
-### Cómo se obtiene la máscara desde el prefijo
+| Área           | Subred            | Rango de hosts        | Broadcast      |
+| :------------- | :---------------- | :-------------------- | :------------- |
+| PC + impresora | 192.168.10.0/26   | 192.168.10.1 – .62    | 192.168.10.63  |
+| Área 2         | 192.168.10.64/26  | 192.168.10.65 – .126  | 192.168.10.127 |
+| Área 3         | 192.168.10.128/26 | 192.168.10.129 – .190 | 192.168.10.191 |
+| Área 4         | 192.168.10.192/26 | 192.168.10.193 – .254 | 192.168.10.255 |
 
-El prefijo indica cuántos bits **en 1** tiene la máscara; agrupándolos de 8 en 8 salen
-los octetos en decimal:
+Cada área queda en su propia subred, separada de las demás por el router: pueden
+llegar a la impresora compartida, pero no ver el resto del tráfico o los recursos
+de otra área. Nota: el salto entre subredes es siempre el mismo valor del bloque —
+`64` — porque todas nacen del mismo prefijo `/26`.
 
-```
-/21  =  11111111.11111111.11111000.00000000  =  255.255.248.0
-        (8)      (8)      (5 unos = 248)     (0)
-```
+### Caso 2: una subred solo para un enlace punto a punto
 
-- Octeto con **8 unos** → `255`; octeto con **0 unos** → `0`.
-- Octeto parcial → `256 - 2^(bits de host de ese octeto)`.
-- A mayor prefijo (más bits de red), **menos** hosts y **menor** el salto.
+**Situación:** dos routers de la oficina se conectan entre sí por un enlace dedicado (wan). Ese enlace no tiene "usuarios", solo las dos interfaces de los routers en cada punta.
 
-### Ejemplo: 192.168.10.0/24 → 4 subredes /26
+**Razonamiento:** hacen falta exactamente 2 direcciones utilizables. Una subred `/26` (62 hosts, 60 desperdiciadas) no tiene sentido para esto.
 
-Robo 2 bits de host (2^2 = 4 subredes), quedan 6 bits (2^6 - 2 = 62 hosts):
+**Procedimiento:**
 
-| Subred            | Rango de hosts        | Broadcast      |
-| :---------------- | :-------------------- | :------------- |
-| 192.168.10.0/26   | 192.168.10.1 – .62    | 192.168.10.63  |
-| 192.168.10.64/26  | 192.168.10.65 – .126  | 192.168.10.127 |
-| 192.168.10.128/26 | 192.168.10.129 – .190 | 192.168.10.191 |
-| 192.168.10.192/26 | 192.168.10.193 – .254 | 192.168.10.255 |
+- Hosts necesarios: 2, más 2 reservados (red y broadcast) → 4.
+- Bloque más próximo: la primera potencia de 2 que alcanza para 4 es **4** (2²).
+- Ese bloque de 4 direcciones equivale a **2 bits de host** (2² = 4).
+- Prefijo → `32 - 2 = /30`.
+- Máscara: `256 - 4 = 252` → `255.255.255.252`.
+- Salto: `256 - 252 = 4`. Cada enlace WAN nuevo empieza 4 direcciones después del anterior — `.0`, `.4`, `.8`, `.12`...
 
-El salto es `256 - 64 = 64` (último octeto de la máscara: 192).
+**Resultado:** `192.168.56.0/30`, con `192.168.56.1` y `.2` para cada router y `192.168.56.3` como broadcast. Este mismo patrón se repite cada vez que aparece un enlace WAN nuevo entre dos equipos: siempre `/30`.
+
+### Caso 3: una sede completa, no solo un área de oficina
+
+**Situación:** una sucursal nueva va a tener hasta 2000 dispositivos (PCs, teléfonos IP, impresoras, cámaras). Una subred `/26` (62 hosts) se queda muy corta.
+
+**Razonamiento:** ahora el problema es al revés que en el Caso 1 — no sobra espacio, falta. Hay que cubrir 2000 hosts con un solo bloque.
+
+**Procedimiento:**
+
+- Hosts necesarios: 2000, más 2 reservados → 2002.
+- Bloque más próximo: la primera potencia de 2 que alcanza para 2002 es **2048** (2¹¹).
+- Ese bloque de 2048 direcciones equivale a **11 bits de host** (2¹¹ = 2048).
+- Prefijo → `32 - 11 = /21`.
+- Máscara: el bloque cae en el tercer octeto → `256 - 8 = 248` → `255.255.248.0`.
+- Salto: se mide en el mismo octeto donde la máscara no es 255 ni 0 (el tercero) → `256 - 248 = 8`. Cada sucursal nueva de este tamaño arrancaría en `10.0.0.0`, `10.0.8.0`, `10.0.16.0`... el cuarto octeto se completa entero (0-255) antes de saltar al siguiente.
+
+**Resultado:** `10.0.0.0/21`, con máscara `255.255.248.0` y 2046 direcciones utilizables (2048 - 2) para toda la sucursal, con margen para crecer un poco.
+
+Estos tres casos son la base del subnetting: partir algo grande en pedazos iguales (Caso 1), reservar el mínimo indispensable (Caso 2), o cubrir una necesidad grande con una sola subred (Caso 3). El procedimiento es siempre el mismo: hosts necesarios → el bloque (potencia de 2) que los cubre → bits de host que representa ese bloque → `32 - esos bits` es el prefijo.
 
 ## 4. Medir: VLSM
 
-**VLSM** (Variable Length Subnet Mask) da a cada subred el **tamaño justo** según lo que
-necesita, en lugar de subredes todas iguales. Se asignan primero las más grandes y se
-sigue el paso/salto de la tabla.
+**VLSM** (Variable Length Subnet Mask) da a cada subred el **tamaño justo** según lo que necesita, en lugar de subredes todas iguales. Se asignan primero las más grandes y se avanza con el salto de cada una.
+
+Este caso aparece cuando las áreas no tienen el mismo tamaño: subnetting parejo (como el Caso 1 de la sección anterior, con subredes `/26` iguales) desperdicia direcciones en las áreas chicas y no alcanza en las grandes.
+
+**Situación:** la empresa tiene tres sedes de tamaños distintos y un enlace WAN entre routers, todos dentro del mismo bloque `192.168.0.0`.
 
 ### El requisito (¿cuántos hosts necesita cada segmento?)
 
@@ -171,10 +203,14 @@ sigue el paso/salto de la tabla.
 | Lan 3      | 1100             |
 | Enlace Wan | 2                |
 
-Para cada segmento elijo el prefijo más pequeño que lo cubra (2^h - 2 ≥ hosts). Con la
-tabla de referencia es directo: 6000 → **/19** (8190), 2500 → **/20** (4094),
-1100 → **/21** (2046) y 2 → **/30** (2). Parto desde `192.168.0.0` y avanzo con el
-salto de cada subred asignada.
+Para cada segmento se aplica el mismo procedimiento del Caso 3: hosts necesarios → el bloque (potencia de 2) que los cubre → bits de host de ese bloque → prefijo.
+
+- Lan 1: 6000 + 2 = 6002 → bloque 8192 (2¹³) → 13 bits de host → **/19**.
+- Lan 2: 2500 + 2 = 2502 → bloque 4096 (2¹²) → 12 bits de host → **/20**.
+- Lan 3: 1100 + 2 = 1102 → bloque 2048 (2¹¹) → 11 bits de host → **/21**.
+- Enlace Wan: igual que el Caso 2 → **/30**.
+
+Se parte desde `192.168.0.0` y se avanza con el salto de cada subred asignada.
 
 ### La solución (las subredes asignadas)
 
@@ -185,11 +221,24 @@ salto de cada subred asignada.
 | Lan 3      | 192.168.48.0/21 (255.255.248.0)   |
 | Enlace Wan | 192.168.56.0/30 (255.255.255.252) |
 
-Comprobación: Lan 1 (`/19`) cubre hasta `192.168.31.255` → Lan 2 salta a `.32`, cubre
-hasta `.47.255` → Lan 3 salta a `.48`, cubre hasta `.55.255` → Wan toma `.56.0 – .56.3`.
+Para cada segmento elijo el prefijo más pequeño que lo cubra (2^h - 2 ≥ hosts). Con la
+tabla de referencia es directo:
 
-En cada LAN las primeras direcciones se reservan para los dispositivos clave:
-**PC `.3`**, **gateway `.6`**, **switch `.8`**.
+- 6000 → **/19** (8190),
+- 2500 → **/20** (4094),
+- 1100 → **/21** (2046)
+- 2 → **/30** (2).
+
+Parto desde `192.168.0.0` y avanzo con el salto de cada subred asignada.
+
+Comprobación:
+
+- Lan 1 (`/19`) cubre hasta `192.168.31.255`
+- Lan 2 salta a `.32`, cubre hasta `.47.255`
+- Lan 3 salta a `.48`, cubre hasta `.55.255`
+- Wan toma `.56.0 – .56.3`.
+
+En cada LAN las primeras direcciones se reservan para los dispositivos clave: **PC `.3`**, **gateway `.6`**, **switch `.8`**.
 
 ## Repaso: otros conceptos IPv4
 
