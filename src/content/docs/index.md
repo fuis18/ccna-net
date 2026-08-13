@@ -26,39 +26,48 @@ IPv4 con subnetting y el direccionamiento IPv6.
 - [Direccionamiento IPv4 y Subnetting](01-network-fundamentals/ipv4-addressing-subnetting)
 - [Direccionamiento IPv6](01-network-fundamentals/ipv6-addressing)
 
-### 2. Switching
+### 2. Device Management
+
+Administración y configuración inicial de dispositivos de red: acceso por consola, aseguramiento de líneas de administración, banners de advertencia y gestión del sistema operativo (IOS).
+
+- Acceso Inicial y Modos de CLI
+- Configuración Básica de Dispositivo (Hostname, Banners, Secret)
+- Acceso Remoto Seguro (SSH vs. Telnet)
+- Gestión de Archivos y Sistema Operativo (IOS / Running-Config)
+
+### 3. Switching
 
 Conmutación en capa 2: VLANs y trunking, protocolos de árbol de expansión,
 agregación de enlaces y seguridad de capa 2.
 
-- [VLANs y Trunking (802.1Q)](02-switching/vlans-trunking)
-- [Spanning Tree Protocol (STP / RSTP)](02-switching/spanning-tree-protocol)
-- [EtherChannel (LACP / PAgP)](02-switching/etherchannel)
-- [Seguridad de Capa 2](02-switching/layer-2-security)
+- [VLANs y Trunking (802.1Q)](03-switching/vlans-trunking)
+- [Spanning Tree Protocol (STP / RSTP)](03-switching/spanning-tree-protocol)
+- [EtherChannel (LACP / PAgP)](03-switching/etherchannel)
+- [Seguridad de Capa 2](03-switching/layer-2-security)
 
-### 3. Routing
+### 4. Routing
 
 Enrutamiento entre redes: rutas estáticas y default, OSPFv2, métricas y distancia
 administrativa, y protocolos FHRP.
 
-- [Rutas Estáticas y Default](03-routing/static-default-routes)
-- [OSPFv2 (Área Única y Multi-área)](03-routing/ospfv2)
-- [Métricas y Distancia Administrativa](03-routing/metrics-administrative-distance)
-- [First Hop Redundancy (FHRP / HSRP)](03-routing/fhrp-hsrp)
+- [Rutas Estáticas y Default](04-routing/static-default-routes)
+- [OSPFv2 (Área Única y Multi-área)](04-routing/ospfv2)
+- [Métricas y Distancia Administrativa](04-routing/metrics-administrative-distance)
+- [First Hop Redundancy (FHRP / HSRP)](04-routing/fhrp-hsrp)
 
-### 4. Wireless Networks (WLAN)
+### 5. Wireless Networks (WLAN)
 
 Redes inalámbricas: arquitectura de puntos de acceso y controladores, configuración
 de WLANs y seguridad inalámbrica.
 
-- [Arquitectura de APs y WLC](04-wireless-networks/ap-wlc-architecture)
-- [Configuración de WLANs y SSIDs](04-wireless-networks/wlan-ssid-configuration)
-- [Seguridad Inalámbrica (WPA2 / WPA3)](04-wireless-networks/wireless-security)
+- [Arquitectura de APs y WLC](05-wireless-networks/ap-wlc-architecture)
+- [Configuración de WLANs y SSIDs](05-wireless-networks/wlan-ssid-configuration)
+- [Seguridad Inalámbrica (WPA2 / WPA3)](05-wireless-networks/wireless-security)
 
-### 5. IP Services and Maintenance
+### 6. IP Services and Maintenance
 
 Servicios IP y mantenimiento: NAT/PAT, DHCP/DNS/NTP y listas de control de acceso.
 
-- [NAT / PAT](05-ip-services/nat-pat)
-- [DHCP / DNS / NTP](05-ip-services/dhcp-dns-ntp)
-- [Listas de Control de Acceso (ACLs)](05-ip-services/acls)
+- [NAT / PAT](06-ip-services/nat-pat)
+- [DHCP / DNS / NTP](06-ip-services/dhcp-dns-ntp)
+- [Listas de Control de Acceso (ACLs)](06-ip-services/acls)

@@ -19,37 +19,43 @@ export default defineConfig({
           ],
         },
         {
-          label: '2. Switching',
+          label: '2. Device Management',
           items: [
-            { label: 'VLANs y Trunking (802.1Q)', slug: '02-switching/vlans-trunking' },
-            { label: 'Spanning Tree Protocol (STP / RSTP)', slug: '02-switching/spanning-tree-protocol' },
-            { label: 'EtherChannel (LACP / PAgP)', slug: '02-switching/etherchannel' },
-            { label: 'Seguridad de Capa 2', slug: '02-switching/layer-2-security' },
+            { label: '', slug: '' }
+          ]
+        },
+        {
+          label: '3. Switching',
+          items: [
+            { label: 'VLANs y Trunking (802.1Q)', slug: '03-switching/vlans-trunking' },
+            { label: 'Spanning Tree Protocol (STP / RSTP)', slug: '03-switching/spanning-tree-protocol' },
+            { label: 'EtherChannel (LACP / PAgP)', slug: '03-switching/etherchannel' },
+            { label: 'Seguridad de Capa 2', slug: '03-switching/layer-2-security' },
           ],
         },
         {
-          label: '3. Routing',
+          label: '4. Routing',
           items: [
-            { label: 'Rutas Estáticas y Default', slug: '03-routing/static-default-routes' },
-            { label: 'OSPFv2 (Área Única y Multi-área)', slug: '03-routing/ospfv2' },
-            { label: 'Métricas y Distancia Administrativa', slug: '03-routing/metrics-administrative-distance' },
-            { label: 'First Hop Redundancy (FHRP / HSRP)', slug: '03-routing/fhrp-hsrp' },
+            { label: 'Rutas Estáticas y Default', slug: '04-routing/static-default-routes' },
+            { label: 'OSPFv2 (Área Única y Multi-área)', slug: '04-routing/ospfv2' },
+            { label: 'Métricas y Distancia Administrativa', slug: '04-routing/metrics-administrative-distance' },
+            { label: 'First Hop Redundancy (FHRP / HSRP)', slug: '04-routing/fhrp-hsrp' },
           ],
         },
         {
-          label: '4. Wireless Networks (WLAN)',
+          label: '5. Wireless Networks (WLAN)',
           items: [
-            { label: 'Arquitectura de APs y WLC', slug: '04-wireless-networks/ap-wlc-architecture' },
-            { label: 'Configuración de WLANs y SSIDs', slug: '04-wireless-networks/wlan-ssid-configuration' },
-            { label: 'Seguridad Inalámbrica (WPA2 / WPA3)', slug: '04-wireless-networks/wireless-security' },
+            { label: 'Arquitectura de APs y WLC', slug: '05-wireless-networks/ap-wlc-architecture' },
+            { label: 'Configuración de WLANs y SSIDs', slug: '05-wireless-networks/wlan-ssid-configuration' },
+            { label: 'Seguridad Inalámbrica (WPA2 / WPA3)', slug: '05-wireless-networks/wireless-security' },
           ],
         },
         {
-          label: '5. IP Services and Maintenance',
+          label: '6. IP Services and Maintenance',
           items: [
-            { label: 'NAT / PAT', slug: '05-ip-services/nat-pat' },
-            { label: 'DHCP / DNS / NTP', slug: '05-ip-services/dhcp-dns-ntp' },
-            { label: 'Listas de Control de Acceso (ACLs)', slug: '05-ip-services/acls' },
+            { label: 'NAT / PAT', slug: '06-ip-services/nat-pat' },
+            { label: 'DHCP / DNS / NTP', slug: '06-ip-services/dhcp-dns-ntp' },
+            { label: 'Listas de Control de Acceso (ACLs)', slug: '06-ip-services/acls' },
           ],
         },
       ],
