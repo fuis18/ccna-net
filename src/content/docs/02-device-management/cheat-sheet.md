@@ -1,17 +1,17 @@
 ---
-title: Cheat Sheet (Referencia Técnica)
+title: Referencia Técnica
 description: "Referencia técnica de Device Management: modos CLI, configuración básica, SSH y gestión de archivos IOS."
 ---
 
 ## Modos de CLI (prompts)
 
-| Modo | Prompt | Entrar | Salir |
-| :--- | :--- | :--- | :--- |
-| Usuario | `Router>` | Inicial | `exit` |
-| Privilegiado | `Router#` | `enable` | `disable` |
-| Config global | `Router(config)#` | `configure terminal` | `end` / `Ctrl+Z` |
-| Línea | `Router(config-line)#` | `line console 0` | `exit` |
-| Interfaz | `Router(config-if)#` | `interface Gi0/0` | `exit` |
+| Modo          | Prompt                 | Entrar               | Salir            |
+| :------------ | :--------------------- | :------------------- | :--------------- |
+| Usuario       | `Router>`              | Inicial              | `exit`           |
+| Privilegiado  | `Router#`              | `enable`             | `disable`        |
+| Config global | `Router(config)#`      | `configure terminal` | `end` / `Ctrl+Z` |
+| Línea         | `Router(config-line)#` | `line console 0`     | `exit`           |
+| Interfaz      | `Router(config-if)#`   | `interface Gi0/0`    | `exit`           |
 
 ## Atajos de CLI
 
@@ -27,106 +27,72 @@ show history           # historial de la sesión
 ## Configuración básica inicial (template)
 
 ```ios
+# Basic Config
 enable
 configure terminal
-hostname R1-Oficina
+hostname R-Oficina
+
 enable secret MiClaveSegura
 service password-encryption
 banner motd #Solo personal autorizado.#
-username admin privilege 15 secret ClaveFuerte!
+
 line console 0
  password cisco123
  login
  exit
 line vty 0 4
  password cisco123
- login local
- transport input ssh
+ login
  exit
 end
+
 copy running-config startup-config
 ```
-
-## Contraseñas
-
-| Comando | Almacenamiento |
-| :--- | :--- |
-| `enable password` | Texto plano (débil) |
-| `enable secret` | Hash MD5 (usar siempre, prioridad) |
-| `service password-encryption` | Cifra líneas/usuarios (tipo 7, reversible) |
-
-## Banners
-
-| Comando | Cuándo se muestra |
-| :--- | :--- |
-| `banner motd #texto#` | Antes del login |
-| `banner login #texto#` | Justo antes del prompt de autenticación |
-| `banner exec #texto#` | Tras autenticarse, antes de la CLI |
-
-## Líneas de administración
-
-| Línea | Uso |
-| :--- | :--- |
-| `line console 0` | Consola física |
-| `line aux 0` | Puerto auxiliar (módem) |
-| `line vty 0 4` (o 0 15) | Acceso remoto (Telnet/SSH) |
-
-Niveles de privilegio IOS: 0 (restringido), 1 (usuario, default), 2-14 (personalizados), 15 (privilegiado).
-
-## SSH vs Telnet
-
-| | Telnet | SSH |
-| :--- | :--- | :--- |
-| Puerto | 23 | 22 |
-| Cifrado | No | Sí |
-| Uso | Legacy/lab | Producción |
 
 ## Configuración SSH (template)
 
 ```ios
+#  SSH Config
 configure terminal
-hostname R1-Oficina
+
 ip domain-name empresa.local
-crypto key generate rsa modulus 2048
+crypto key generate rsa general-keys modulus 2048
 ip ssh version 2
-username admin secret ClaveFuerte!
+
+username admin secret privilege 15 ClaveFuerte!
 line vty 0 4
  transport input ssh
  login local
  exit
 end
+
+copy running-config startup-config
 ```
+
+### Verificación
 
 ```ios
-show ip ssh            # verificación
+show ip ssh
 show ip ssh connections
 show ssh
-ssh -l admin 192.168.1.2   # conectarse desde IOS
-```
 
-Requisitos previos SSH: hostname no default + `ip domain-name` + clave RSA (modulus ≥ 1024, 2048 recomendado).
+# conectarse desde PC
+ssh -l admin 192.168.1.2
+telnet 192.168.0.1
+```
 
 ## Verificación
 
-| Comando | Muestra |
-| :--- | :--- |
-| `show running-config` | Config activa (RAM) |
-| `show startup-config` | Config guardada (NVRAM) |
-| `show version` | IOS, modelo, uptime, memoria |
-| `show interfaces` | Estado de interfaces |
-| `show ip interface brief` | Resumen IP de interfaces |
-| `show clock` | Fecha y hora |
-| `show flash` | Contenido y espacio de Flash |
-| `show boot` | Imagen de arranque |
-
-## Memorias
-
-| Memoria | Contenido | Volatilidad |
-| :--- | :--- | :--- |
-| RAM | IOS en ejecución, running-config | Volátil |
-| NVRAM | startup-config | Persistente |
-| Flash | Imagen del IOS, backups | Persistente |
-| ROM | Bootstrap, mini-IOS | Solo lectura |
+| Comando                   | Muestra                      |
+| :------------------------ | :--------------------------- |
+| `show running-config`     | Config activa (RAM)          |
+| `show startup-config`     | Config guardada (NVRAM)      |
+| `show version`            | IOS, modelo, uptime, memoria |
+| `show interfaces`         | Estado de interfaces         |
+| `show ip interface brief` | Resumen IP de interfaces     |
+| `show clock`              | Fecha y hora                 |
+| `show flash`              | Contenido y espacio de Flash |
+| `show boot`               | Imagen de arranque           |
 
 ## Gestión de configuración
 
