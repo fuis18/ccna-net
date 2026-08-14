@@ -43,4 +43,4 @@ configuración (EUI-64, SLAAC) y coexistencia con IPv4.
 | IPv4               | 32 bits, binario, clases, máscaras, CIDR, subnetting |
 | IPv6               | 128 bits, hexadecimal, tipos unicast/multicast/anyscast |
 
-Continúa con [el Módulo 2](../02-switching/) cuando domines estos conceptos.
+Continúa con [el Módulo 2](../02-device-management/) cuando domines estos conceptos.

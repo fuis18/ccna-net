@@ -17,7 +17,7 @@ Se recomienda seguirlos en orden, aunque cada capítulo puede consultarse de for
 
 ## Contenido
 
-### 1. Network Fundamentals
+### [1. Network Fundamentals](01-network-fundamentals/)
 
 Introducción a los fundamentos de red: el modelo OSI y TCP/IP, el direccionamiento
 IPv4 con subnetting y el direccionamiento IPv6.
@@ -26,16 +26,16 @@ IPv4 con subnetting y el direccionamiento IPv6.
 - [Direccionamiento IPv4 y Subnetting](01-network-fundamentals/ipv4-addressing-subnetting)
 - [Direccionamiento IPv6](01-network-fundamentals/ipv6-addressing)
 
-### 2. Device Management
+### [2. Device Management](02-device-management/)
 
 Administración y configuración inicial de dispositivos de red: acceso por consola, aseguramiento de líneas de administración, banners de advertencia y gestión del sistema operativo (IOS).
 
-- Acceso Inicial y Modos de CLI
-- Configuración Básica de Dispositivo (Hostname, Banners, Secret)
-- Acceso Remoto Seguro (SSH vs. Telnet)
-- Gestión de Archivos y Sistema Operativo (IOS / Running-Config)
+- [Acceso Inicial y Modos de CLI](02-device-management/cli-modes)
+- [Configuración Básica de Dispositivo (Hostname, Banners, Secret)](02-device-management/basic-configuration)
+- [Acceso Remoto Seguro (SSH vs. Telnet)](02-device-management/secure-remote-access)
+- [Gestión de Archivos y Sistema Operativo (IOS / Running-Config)](02-device-management/ios-file-management)
 
-### 3. Switching
+### [3. Switching](03-switching/)
 
 Conmutación en capa 2: VLANs y trunking, protocolos de árbol de expansión,
 agregación de enlaces y seguridad de capa 2.
@@ -45,7 +45,7 @@ agregación de enlaces y seguridad de capa 2.
 - [EtherChannel (LACP / PAgP)](03-switching/etherchannel)
 - [Seguridad de Capa 2](03-switching/layer-2-security)
 
-### 4. Routing
+### [4. Routing](04-routing/)
 
 Enrutamiento entre redes: rutas estáticas y default, OSPFv2, métricas y distancia
 administrativa, y protocolos FHRP.
@@ -55,7 +55,7 @@ administrativa, y protocolos FHRP.
 - [Métricas y Distancia Administrativa](04-routing/metrics-administrative-distance)
 - [First Hop Redundancy (FHRP / HSRP)](04-routing/fhrp-hsrp)
 
-### 5. Wireless Networks (WLAN)
+### [5. Wireless Networks (WLAN)](05-wireless-networks/)
 
 Redes inalámbricas: arquitectura de puntos de acceso y controladores, configuración
 de WLANs y seguridad inalámbrica.
@@ -64,7 +64,7 @@ de WLANs y seguridad inalámbrica.
 - [Configuración de WLANs y SSIDs](05-wireless-networks/wlan-ssid-configuration)
 - [Seguridad Inalámbrica (WPA2 / WPA3)](05-wireless-networks/wireless-security)
 
-### 6. IP Services and Maintenance
+### [6. IP Services and Maintenance](06-ip-services/)
 
 Servicios IP y mantenimiento: NAT/PAT, DHCP/DNS/NTP y listas de control de acceso.
 

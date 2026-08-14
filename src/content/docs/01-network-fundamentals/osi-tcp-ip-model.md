@@ -29,12 +29,12 @@ información, capa por capa, del emisor al receptor.
 
 TCP/IP es el modelo que realmente usa internet. Es práctico y agrupa varias capas del OSI.
 
-| Capa TCP/IP  | Equivalente OSI | Protocolos principales                 |
-| :----------- | :-------------- | :------------------------------------- |
-| Aplicación   | 7, 6, 5         | HTTP, HTTPS, DNS, SMTP, FTP, DHCP, SSH |
-| Transporte   | 4               | TCP, UDP                               |
-| Internet     | 3               | IP, ICMP, ARP (a veces en capa 2)      |
-| Acceso a red | 2, 1            | Ethernet, Wi-Fi, PPP                   |
+| Capa TCP/IP    | Equivalente OSI | Protocolos principales                 |
+| :------------- | :-------------- | :------------------------------------- |
+| Aplication     | 7, 6, 5         | HTTP, HTTPS, DNS, SMTP, FTP, DHCP, SSH |
+| Transport      | 4               | TCP, UDP                               |
+| Internet       | 3               | IP, ICMP, ARP (a veces en capa 2)      |
+| Network Access | 2, 1            | Ethernet, Wi-Fi, PPP                   |
 
 ### TCP vs UDP
 
@@ -44,6 +44,9 @@ TCP/IP es el modelo que realmente usa internet. Es práctico y agrupa varias cap
 | Confiable                       | Sí (ACKs, retransmisión) | No (mejor esfuerzo)          |
 | Segmentación y control de flujo | Sí                       | No                           |
 | Usos                            | Web, correo, archivos    | VoIP, streaming, DNS, juegos |
+
+> - TCP: Verifica que no se pierda la información.
+> - UDP: Brinda la información rapida y continuamente.
 
 ## Encapsulación y desencapsulación
 
@@ -66,6 +69,30 @@ Cada uno de los nombres que recibe el dato al bajar de capa es su **PDU**:
 TCP:  |TCP| datos                 -> Segmento (PDU de transporte)
 IP:   |IP |TCP| datos             -> Paquete (PDU de red)
 ETH:  |MAC|IP | TCP | datos |FCS| -> Trama (PDU de enlace de datos)
+```
+
+```mermaid
+flowchart LR
+    subgraph Emisor["Emisor — encapsulación"]
+        direction TB
+        D1["Datos"]
+        S1["Segmento: |TCP| datos"]
+        P1["Paquete: |IP| TCP | datos"]
+        F1["Trama: |MAC| IP | TCP | datos |FCS|"]
+        D1 --> S1 --> P1 --> F1
+    end
+    subgraph Medio["Medio físico"]
+        M["bits"]
+    end
+    subgraph Receptor["Receptor — desencapsulación"]
+        direction TB
+        F2["Trama"]
+        P2["Paquete"]
+        S2["Segmento"]
+        D2["Datos"]
+        F2 --> P2 --> S2 --> D2
+    end
+    F1 --> M --> F2
 ```
 
 ## Direcciones en cada capa

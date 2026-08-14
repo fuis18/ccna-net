@@ -1,0 +1,5 @@
+/* Ajuste de tamaño del código en línea (direcciones IP, máscaras, prefijos)
+   para que no se vea más pequeño que el texto de los párrafos. */
+.sl-markdown-content :not(pre) > code {
+  font-size: 0.94em;
+}
