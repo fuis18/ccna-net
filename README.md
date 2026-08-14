@@ -21,6 +21,11 @@ Built with [Astro](https://astro.build/) + [Starlight](https://starlight.astro.b
 
 The `.md` files in `src/content/docs/` are exposed as site routes. Each chapter has its own folder with an `index.md` and the pages for its topics.
 
+## Features
+
+- Diagrams (Mermaid)
+- Math (LaTeX / KaTeX)
+
 ## Content Structure
 
 ```
@@ -35,12 +40,12 @@ src/content/docs/
 
 ## Commands
 
-| Command          | Action                                     |
-| :--------------- | :----------------------------------------- |
-| `pnpm install`   | Installs dependencies                      |
+| Command          | Action                                      |
+| :--------------- | :------------------------------------------ |
+| `pnpm install`   | Installs dependencies                       |
 | `pnpm dev`       | Starts local dev server at `localhost:4321` |
-| `pnpm build`     | Builds production site to `./dist/`        |
-| `pnpm preview`   | Previews the build locally                 |
+| `pnpm build`     | Builds production site to `./dist/`         |
+| `pnpm preview`   | Previews the build locally                  |
 | `pnpm astro ...` | Run Astro CLI commands (e.g. `astro check`) |
 
 ## Deploy
