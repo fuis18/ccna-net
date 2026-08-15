@@ -34,6 +34,7 @@ Al conectar y presionar Enter, verás el prompt en **modo usuario**:
 
 Router>
 ```
+
 ## Los modos de la CLI de IOS
 
 La interfaz de línea de comandos (CLI) de IOS organiza los comandos en niveles
@@ -66,12 +67,12 @@ de comandos.
 
 Desde el modo de configuración global se entra a submodos específicos:
 
-| Submodo        | Comando de entrada        | Prompt                | Configura qué                |
-| :------------- | :------------------------ | :--------------------- | :---------------------------- |
-| Línea          | `line console 0`          | `Router(config-line)#` | Puertos console, aux y VTY    |
-| Interfaz       | `interface GigabitEthernet0/0` | `Router(config-if)#` | Interfaces del dispositivo |
-| VLAN           | `vlan 10`                 | `Router(config-vlan)#` | VLANs del switch              |
-| Routing        | `router ospf 1`           | `Router(config-router)#` | Protocolos de enrutamiento  |
+| Submodo  | Comando de entrada             | Prompt                   | Configura qué              |
+| :------- | :----------------------------- | :----------------------- | :------------------------- |
+| Línea    | `line console 0`               | `Router(config-line)#`   | Puertos console, aux y VTY |
+| Interfaz | `interface GigabitEthernet0/0` | `Router(config-if)#`     | Interfaces del dispositivo |
+| VLAN     | `vlan 10`                      | `Router(config-vlan)#`   | VLANs del switch           |
+| Routing  | `router ospf 1`                | `Router(config-router)#` | Protocolos de enrutamiento |
 
 ```mermaid
 graph TD
@@ -94,22 +95,10 @@ IOS ofrece ayuda contextual y abreviaturas para agilizar el trabajo:
 - **`?`**: muestra ayuda. Si se escribe solo, lista todos los comandos del modo
   actual; después de un comando incompleto, muestra los parámetros disponibles.
 - **Tab**: completa el comando (autocompletado).
-- **Abreviaturas**: basta con escribir lo que no sea ambiguo. Ej.
-  `en`, `conf t`, `sh run` en lugar de `enable`, `configure terminal`,
-  `show running-config`.
 - **`Ctrl+Z`** o **`end`**: vuelve al modo privilegiado desde cualquier submodo.
 - **`exit`**: retrocede un nivel en la jerarquía de modos.
 - **`Ctrl+Shift+6`**: interrumpe un comando en ejecución (ej. un ping largo).
-- **Historial**: flechas arriba/abajo para recorrer comandos anteriores.
 - **`show history`**: muestra los comandos recientes de la sesión.
-
-```ios
-  Exec commands:
-    clear    Reset functions
-    configure  Enter configuration mode
-    copy     Copy from one file to another
-    ...
-```
 
 > **Pista CCNA:** memoriza los prompts. En un examen, identificar en qué modo
 > estás te dice qué comandos son válidos. `>` = usuario, `#` = privilegiado,
@@ -119,14 +108,14 @@ IOS ofrece ayuda contextual y abreviaturas para agilizar el trabajo:
 
 En modo privilegiado puedes ver el estado del equipo:
 
-| Comando                    | Qué muestra                             |
-| :-------------------------- | :---------------------------------------- |
-| `show running-config`       | Configuración activa (en RAM)             |
-| `show startup-config`       | Configuración guardada (en NVRAM)         |
-| `show version`              | Versión de IOS, memoria, uptime, modelo   |
-| `show interfaces`           | Estado y estadísticas de las interfaces   |
-| `show ip interface brief`   | Resumen de interfaces (IP y estado)       |
-| `show clock`                | Fecha y hora del dispositivo              |
+| Comando                   | Qué muestra                             |
+| :------------------------ | :-------------------------------------- |
+| `show running-config`     | Configuración activa (en RAM)           |
+| `show startup-config`     | Configuración guardada (en NVRAM)       |
+| `show version`            | Versión de IOS, memoria, uptime, modelo |
+| `show interfaces`         | Estado y estadísticas de las interfaces |
+| `show ip interface brief` | Resumen de interfaces (IP y estado)     |
+| `show clock`              | Fecha y hora del dispositivo            |
 
 ## Preguntas tipo CCNA
 

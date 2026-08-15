@@ -35,7 +35,7 @@ SSH en las líneas VTY.
 
 ## Configuración completa de SSH
 
-```
+```ios
 Router> enable
 Router# configure terminal
 Router(config)# hostname R1-Oficina
@@ -86,7 +86,7 @@ nombre en vez de memorizar la IP.
 
 ## Verificar SSH
 
-```
+```ios
 R1-Oficina# show ip ssh
 SSH Enabled - version 2.0
 Authentication timeout: 120 secs; Authentication retries: 3
@@ -99,7 +99,7 @@ R1-Oficina# show ssh
 
 Desde un equipo IOS (o cualquier cliente SSH), se usa el comando `ssh`:
 
-```
+```ios
 R1-Oficina# ssh -l admin 192.168.1.2
 Password:
 R2-Sucursal>
@@ -110,7 +110,7 @@ hacia la dirección IP de administración del equipo, o hacia su FQDN si hay DNS
 que lo resuelva — la razón por la que el dominio importa, retomando la sección
 anterior:
 
-```
+```ios
 ssh admin@192.168.1.2               # por IP, siempre funciona
 ssh admin@R1-Oficina.empresa.local  # por FQDN — requiere que DNS resuelva ese nombre
 ssh -l admin R1-Oficina             # por hostname corto — el cliente debe asumir el dominio local
@@ -124,7 +124,7 @@ usar depende del cliente SSH que tengas a mano.
 Telnet solo necesita contraseña en las líneas VTY. Se muestra por contraste,
 pero **no se recomienda** en redes reales:
 
-```
+```ios
 R1-Oficina(config)# line vty 0 4
 R1-Oficina(config-line)# password cisco123
 R1-Oficina(config-line)# login

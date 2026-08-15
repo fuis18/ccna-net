@@ -17,6 +17,7 @@ Router# configure terminal
 Router(config)# hostname R1-Oficina
 R1-Oficina(config)#
 ```
+
 > El hostname no admite espacios; usa guiones. Se refleja de inmediato en el prompt.
 
 ## Banners de advertencia
@@ -32,7 +33,8 @@ práctica de seguridad, ya que invita a intrusos.
 | `banner login` | Justo antes del prompt de autenticación               |
 | `banner exec`  | Después de autenticarse, antes de la CLI              |
 
-```R1-Oficina(config)# banner motd #ACCESO AUTORIZADO SOLO PARA PERSONAL AUTORIZADO.#
+```ios
+R1-Oficina(config)# banner motd #ACCESO AUTORIZADO SOLO PARA PERSONAL AUTORIZADO.#
 ```
 
 El delimitador (en el ejemplo `#`) marca el inicio y fin del mensaje; puede ser
@@ -41,6 +43,7 @@ cualquier carácter que no aparezca en el texto. Ejemplos:
 ```ios
 R1-Oficina(config)# banner exec #Configuracion en curso. No apagar el equipo.#
 ```
+
 ## Seguridad de las líneas de administración
 
 Las **líneas** (lines) son los canales por donde entran las sesiones de
@@ -80,6 +83,7 @@ R1-Oficina(config)# line vty 0 4
 R1-Oficina(config-line)# login local
 R1-Oficina(config-line)# transport input ssh
 ```
+
 ### Niveles de privilegio en Cisco IOS
 
 Cisco IOS maneja una escala de privilegios que va del 0 al 15:
@@ -103,7 +107,8 @@ El comando `enable` protege el paso al modo privilegiado. Hay dos variantes:
 Usa siempre **`enable secret`**; si ambos existen, `enable secret` tiene
 prioridad.
 
-```R1-Oficina(config)# enable secret MiClaveSegura
+```ios
+R1-Oficina(config)# enable secret MiClaveSegura
 ```
 
 ### Proteger contraseñas en la configuración
@@ -113,8 +118,10 @@ tipo 7) las contraseñas de líneas que aparecerían en texto plano en el
 `show running-config`. Protege contra miradas casuales, pero no es
 criptográficamente fuerte.
 
-```R1-Oficina(config)# service password-encryption
+```ios
+R1-Oficina(config)# service password-encryption
 ```
+
 > El `enable secret` ya se guarda como hash (MD5) y no necesita esta opción.
 
 ## Reloj y hora
@@ -122,7 +129,8 @@ criptográficamente fuerte.
 Configurar fecha y hora correctas es importante para logs y certificados
 (por ejemplo para SSH):
 
-```R1-Oficina# clock set 14:30:00 14 aug 2026
+```ios
+R1-Oficina# clock set 14:30:00 14 aug 2026
 ```
 
 > En producción se sincroniza con un servidor NTP (ver [Módulo 6](../06-ip-services/dhcp-dns-ntp)).
@@ -132,11 +140,13 @@ Configurar fecha y hora correctas es importante para logs y certificados
 Los cambios van al **running-config** (RAM) y se pierden al reiniciar. Para
 persistirlos hay que guardarlos:
 
-```R1-Oficina# copy running-config startup-config
+```ios
+R1-Oficina# copy running-config startup-config
 Destination filename [startup-config]?
 Building configuration...
 [OK]
 ```
+
 ## Configuración inicial completa
 
 ```ios

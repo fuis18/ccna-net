@@ -51,13 +51,25 @@ description: "Referencia técnica de Network Fundamentals: tablas y comandos ese
 
 ### Fórmulas
 
-```bash
-Host necesarios = H + 2
-(h) bits de host = 2^h >= H + 2
-Prefijo -> 32 - h = /P
-Máscara (octeto) = 256 - tamaño del bloque
-Salto = 256 - octecto
-```
+Hosts necesarios para H hosts utilizables (red + broadcast incluidos):
+
+$$N = H + 2$$
+
+Bits de host necesarios:
+
+$$2^h \geq H + 2$$
+
+Prefijo resultante:
+
+$$/P = 32 - h$$
+
+Máscara de un octeto:
+
+$$\text{máscara} = 256 - \text{tamaño del bloque}$$
+
+Salto entre subredes:
+
+$$\text{salto} = 256 - \text{octeto}$$
 
 |     Octecto     |     Hexteto     |    Triocteto    |      Dword      |
 | :-------------: | :-------------: | :-------------: | :-------------: |
