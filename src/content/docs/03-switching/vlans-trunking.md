@@ -152,7 +152,7 @@ SW1(config-if)# switchport trunk allowed vlan 10,20,99
 ```
 
 | Comando                           | Función                                    |
-| :-------------------------------- | :------------------------------------------ |
+| :-------------------------------- | :----------------------------------------- |
 | `switchport mode trunk`           | Fuerza el puerto a modo trunk              |
 | `switchport trunk native vlan 99` | Cambia la VLAN nativa (mejor que la 1)     |
 | `switchport trunk allowed vlan`   | Restringe las VLANs permitidas en el trunk |
@@ -174,6 +174,8 @@ SW1(config-if)# switchport voice vlan 100
 ## Verificación
 
 ```ios
+SW1# show vlan
+
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    Gi0/2, Gi0/3, ...
@@ -182,7 +184,9 @@ VLAN Name                             Status    Ports
 ...
 ```
 
-```SW1# show interfaces trunk
+```ios
+SW1# show interfaces trunk
+
 Port        Mode         Encapsulation  Status        Native vlan
 Gi0/24      on           802.1q         trunking      99
 ...

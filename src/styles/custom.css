@@ -3,3 +3,14 @@
 .sl-markdown-content :not(pre) > code {
   font-size: 0.94em;
 }
+
+/* Cajas de switch en los diagramas SVG inline (ej. STP).
+   Relleno sólido que se adapta al tema activo para que no se
+   transparenten las líneas que pasan por debajo. */
+.stp-switch {
+  fill: #ececff;
+  stroke: currentColor;
+}
+:root[data-theme='dark'] .stp-switch {
+  fill: #1f2020;
+}
