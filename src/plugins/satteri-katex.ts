@@ -1,11 +1,14 @@
 import katex from 'katex';
+import type { HastPluginDefinition } from 'satteri';
+import type { Element } from 'hast';
 
-const mathClass = (node) => {
+const mathClass = (node: Readonly<Element>): string[] => {
   const className = node.properties?.className;
-  return Array.isArray(className) ? className : [];
+  if (!Array.isArray(className)) return [];
+  return className.filter((c): c is string => typeof c === 'string');
 };
 
-const renderMath = (source, displayMode) =>
+const renderMath = (source: string, displayMode: boolean): string =>
   katex.renderToString(source, { displayMode, throwOnError: false });
 
 export const satteriKatexPlugin = {
@@ -17,7 +20,7 @@ export const satteriKatexPlugin = {
         const code = node.children?.find(
           (child) => child.type === 'element' && child.tagName === 'code'
         );
-        if (!code) return;
+        if (code?.type !== 'element') return;
         const className = mathClass(code);
         if (!className.includes('language-math') && !className.includes('math-display')) return;
         const html = renderMath(ctx.textContent(code), true);
@@ -34,4 +37,4 @@ export const satteriKatexPlugin = {
       },
     },
   ],
-};
+} satisfies HastPluginDefinition;

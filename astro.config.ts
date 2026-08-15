@@ -1,25 +1,48 @@
-// @ts-check
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mermaid from 'astro-mermaid';
 import { satteri } from '@astrojs/markdown-satteri';
-import { satteriKatexPlugin } from './src/plugins/satteri-katex.mjs';
+import { satteriKatexPlugin } from './src/plugins/satteri-katex.ts';
+import { iosTheme } from './src/plugins/ios-theme.ts';
+import { iosGrammar } from './src/plugins/ios-grammar.ts';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://fuis18.is-a.dev',
   base: process.env.NODE_ENV === 'production' ? '/ccna-net/' : '/',
+  vite: {
+    resolve: {
+      alias: {
+        // @mermaid-js/parser (parser langium) es un módulo único de ~663 kB
+        // que rolldown no puede partir; solo lo usan diagramas no soportados
+        // aquí. Aliarlo a un stub lo elimina del build y evita el warning de
+        // "chunks larger than 500 kB".
+        '@mermaid-js/parser': fileURLToPath(
+          new URL('./src/plugins/mermaid-parser-stub.ts', import.meta.url),
+        ),
+      },
+    },
+  },
   markdown: {
     processor: satteri({
       features: { math: true },
       hastPlugins: [satteriKatexPlugin],
     }),
+    shikiConfig: {
+      theme: iosTheme,
+      langs: [iosGrammar],
+    },
   },
   integrations: [
     mermaid({ autoTheme: true }),
     starlight({
       title: 'CCNA (Routers & Switches)',
       customCss: ['katex/dist/katex.min.css', './src/styles/custom.css'],
+      expressiveCode: {
+        themes: [iosTheme],
+        useStarlightDarkModeSwitch: false,
+      },
       sidebar: [
         {
           label: '1. Network Fundamentals',

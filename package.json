@@ -18,5 +18,11 @@
     "katex": "^0.18.4",
     "mermaid": "^11.16.1",
     "sharp": "0.35.3"
+  },
+  "devDependencies": {
+    "@shikijs/types": "4.4.3",
+    "@types/hast": "3.0.5",
+    "satteri": "0.9.5",
+    "typescript": "^7.0.2"
   }
 }
