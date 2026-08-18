@@ -3,145 +3,174 @@ title: EtherChannel (LACP / PAgP)
 description: "EtherChannel: agregación de enlaces físicos en uno lógico, protocolos LACP y PAgP, modos de negociación y balanceo de carga."
 ---
 
-**EtherChannel** (también llamado port-channel) agrupa varios enlaces físicos en
-un único enlace **lógico**. En lugar de que STP bloquee los enlaces redundantes,
-estos se combinan para aportar ancho de banda y redundancia al mismo tiempo.
+## El problema
 
-## ¿Por qué EtherChannel?
-
-| Beneficio    | Descripción                                            |
-| :----------- | :----------------------------------------------------- |
-| Ancho de banda | 4 x 1 Gbps = un enlace lógico de 4 Gbps               |
-| Redundancia  | Si falla un enlace físico, el canal sigue activo       |
-| Sin bloqueo  | STP ve el canal como un solo enlace: no bloquea los demás |
-| Simplicidad  | Una sola dirección lógica para gestionar y verificar  |
+SW1 y SW2 están conectados por **4 enlaces Gigabit** (Gi0/1 a Gi0/4), pensados
+para dar redundancia y más ancho de banda. Pero al revisar STP con
+`show spanning-tree`, ves que solo **uno** de los cuatro puertos está en estado
+`forwarding`. Los otros tres están en `blocking`.
 
 ```mermaid
 graph TD
-    S1[SW1] ---|"Gi0/1"| S2[SW2]
-    S1 ---|"Gi0/2"| S2
-    S1 ---|"Gi0/3"| S2
-    S1 ---|"Gi0/4"| S2
+    S1[SW1] ---|"Gi0/1 (forwarding)"| S2[SW2]
+    S1 -.-|"Gi0/2 (blocking)"| S2
+    S1 -.-|"Gi0/3 (blocking)"| S2
+    S1 -.-|"Gi0/4 (blocking)"| S2
 ```
-Sin EtherChannel, STP bloquearía 3 de los 4 enlaces. Con EtherChannel, los 4 se
-usan como un solo enlace lógico (Port-Channel).
 
-## Protocolos de negociación
+Esto es **normal**: STP detecta un bucle (4 caminos entre los mismos dos
+switches) y bloquea 3 enlaces para evitarlo. El problema es que estás pagando
+por 4 Gbps de capacidad y usando solo 1, y si Gi0/1 falla, STP tarda unos
+segundos en reconverger antes de activar otro enlace.
 
-| Protocolo      | Estándar           | Notas                                   |
-| :------------- | :----------------- | :-------------------------------------- |
-| **PAgP**       | Propietario Cisco  | Modos `auto` y `desirable`              |
-| **LACP**       | IEEE 802.3ad       | Abierto, interoperable; modos `active` y `passive` |
+## La solución: EtherChannel
 
-### Modos de negociación
+EtherChannel agrupa los 4 enlaces físicos en **un solo enlace lógico**
+(un _Port-Channel_). STP deja de ver 4 caminos redundantes y ve solo uno, así
+que no bloquea nada: los 4 enlaces quedan activos y el tráfico se reparte
+entre ellos. Si uno falla, el canal sigue funcionando con los que quedan, sin
+esperar la reconvergencia de STP.
 
-| Modo    | Protocolo | Qué hace                                  |
-| :------ | :-------- | :---------------------------------------- |
-| `on`    | Ninguno   | Activa el canal sin negociar (forzado)    |
-| `active`| LACP      | Negocia activamente (inicia)              |
-| `passive`| LACP     | Espera a que el otro lado inicie          |
-| `desirable`| PAgP   | Negocia activamente (inicia)              |
-| `auto`  | PAgP      | Espera a que el otro lado inicie          |
+```mermaid
+graph TD
+    S1[SW1] ===|"Port-channel 1 (4 Gbps)"| S2[SW2]
+```
 
-> Para que el canal se forme, ambos extremos deben ser **compatibles**:
-> `active` + `passive` o `active` + `active` (LACP); `desirable` + `auto` o
-> `desirable` + `desirable` (PAgP). El modo `on` funciona sin negociación en
-> ambos lados.
+Para negociar el canal entre los dos switches se usa un protocolo:
 
-## Requisitos de los enlaces del canal
+| Protocolo | Estándar               | Modos                                  |
+| :-------- | :--------------------- | :------------------------------------- |
+| **LACP**  | IEEE 802.3ad (abierto) | `active` (inicia) / `passive` (espera) |
+| **PAgP**  | Propietario Cisco      | `desirable` (inicia) / `auto` (espera) |
 
-Todos los puertos del canal deben tener **exactamente las mismas**:
+También existe el modo `on`, que activa el canal sin negociar nada — funciona,
+pero si un puerto queda mal cableado o mal configurado, el canal no lo
+detecta solo, porque no hay negociación que verifique la coherencia. Por eso
+en producción casi siempre se usa LACP.
 
-- Velocidad y dúplex.
-- Configuración VLAN (mismo modo access/trunk, misma VLAN o native).
-- Configuración de trunk (mismas VLANs permitidas).
+Para que el canal se forme, los dos extremos deben quedar en modos
+compatibles: `active`-`passive`, `active`-`active` (LACP), o
+`desirable`-`auto`, `desirable`-`desirable` (PAgP). Combinar `passive` con
+`passive`, o `auto` con `auto`, no funciona: ninguno de los dos inicia la
+negociación.
 
-Si los parámetros difieren, el canal **no se forma** o falla.
+## Configurarlo con LACP
 
-## Configuración de EtherChannel (LACP)
+En **SW1**, se agrupan los 4 puertos y se levanta el canal:
 
 ```ios
+SW1(config)# interface range GigabitEthernet 0/1 - 4
 SW1(config-if-range)# channel-group 1 mode active
 SW1(config-if-range)# exit
-
 SW1(config)# interface Port-channel 1
 SW1(config-if)# switchport mode trunk
 SW1(config-if)# switchport trunk allowed vlan 10,20
+SW1(config-if)# exit
 ```
-Pasos clave:
 
-| Comando                          | Función                                   |
-| :------------------------------- | :---------------------------------------- |
-| `channel-group 1 mode active`    | Asigna los puertos al canal 1 y negocia LACP |
-| `interface Port-channel 1`       | Entra al canal lógico                     |
-| `switchport mode trunk`          | Configura el canal (no cada puerto)       |
+En **SW2**, lo mismo (con `passive`, ya que SW1 va a iniciar la negociación):
 
-> En el canal, la configuración se aplica en `Port-channel 1`, no en cada
-> interfaz física. Las interfaces físicas heredan la config del canal.
-
-## Balanceo de carga
-
-EtherChannel reparte las tramas entre los enlaces usando un **hash** sobre
-campos del flujo:
-
-| Método                       | Campos usados                    |
-| :--------------------------- | :------------------------------- |
-| `src-mac`                    | Dirección MAC origen             |
-| `dst-mac`                    | Dirección MAC destino            |
-| `src-dst-mac`                | MAC origen y destino (por flujo) |
-| `src-ip` / `dst-ip`          | Direcciones IP                   |
-| `src-dst-ip` (por defecto)   | IP origen y destino              |
-| `src-dst-port`               | Puertos TCP/UDP                  |
-
-```SW1(config)# port-channel load-balance src-dst-ip
+```ios
+SW2(config)# interface range GigabitEthernet 0/1 - 4
+SW2(config-if-range)# channel-group 1 mode passive
+SW2(config-if-range)# exit
+SW2(config)# interface Port-channel 1
+SW2(config-if)# switchport mode trunk
+SW2(config-if)# switchport trunk allowed vlan 10,20
+SW2(config-if)# exit
 ```
-> El balanceo es **por flujo**, no por paquete: cada flujo (misma combinación
-> de campos del hash) usa siempre el mismo enlace, lo que evita reordenar
-> tramas TCP.
 
-## Verificación
+Un punto clave: la configuración de VLAN y trunk se aplica en
+`interface Port-channel 1`, **no** en cada puerto físico. Las interfaces
+físicas heredan automáticamente esa configuración en cuanto entran al canal.
 
-```SW1# show etherchannel summary
+Se verifica con:
+
+```ios
+SW1# show etherchannel summary
 Flags:  D - down        P - bundled in port-channel
         I - stand-alone s - suspended
 
 Group  Port-channel  Protocol    Ports
-------+-------------+-----------+-----------------------------------------------
+------+-------------+-----------+----------------------------------------
 1      Po1(SU)         LACP      Gi0/1(P)  Gi0/2(P)  Gi0/3(P)  Gi0/4(P)
 ```
 
-- `Po1(SU)` = canal **up** en capa 2.
-- `(P)` = puerto **bundled** (agregado al canal). Si un puerto no aparece con
-  `P`, está `suspended` o `stand-alone` y hay que revisar los parámetros.
+`Po1(SU)` confirma que el canal está _up_ en capa 2, y la `(P)` en cada
+puerto confirma que los 4 quedaron _bundled_ (agregados). Ahora
+`show spanning-tree` va a mostrar un solo puerto — el Port-channel 1 — en
+`forwarding`, y los 4 Gbps están disponibles.
 
-```SW1# show etherchannel load-balance
-EtherChannel Load-Balancing Configuration: src-dst-ip
+## Segundo problema: el canal no termina de formarse
+
+Supón que en SW2 alguien configuró Gi0/3 como `access` en lugar de `trunk`
+por error. Al revisar el canal:
+
+```ios
+SW2# show etherchannel summary
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+----------------------------------------
+1      Po1(SU)         LACP      Gi0/1(P)  Gi0/2(P)  Gi0/3(D)  Gi0/4(P)
 ```
 
-## Preguntas tipo CCNA
+Gi0/3 aparece con `(D)` — _down_ — en vez de `(P)`. El canal sigue funcionando
+con los otros 3 enlaces, pero uno se quedó fuera y ya no da ancho de banda.
 
-1. **¿Qué es EtherChannel y qué problema resuelve?**
-   Agrupa enlaces físicos en **un enlace lógico**: usa varios enlaces a la vez
-   en vez de que STP bloquee los redundantes.
+La causa casi siempre es la misma: **para que un puerto entre al canal, su
+configuración debe ser idéntica a la de los demás puertos del grupo** —
+misma velocidad, mismo dúplex, mismo modo (access/trunk), mismas VLANs
+permitidas. Si algo difiere, LACP/PAgP lo dejan fuera del canal en vez de
+formarlo mal.
 
-2. **¿Cuáles son los dos protocolos de negociación y sus modos?**
-   **LACP** (`active`/`passive`, estándar 802.3ad) y **PAgP**
-   (`desirable`/`auto`, propietario Cisco); más el modo `on`.
+La solución es corregir el puerto para que coincida con el resto:
 
-3. **¿Qué requisitos deben cumplir los puertos del canal?**
-   Misma **velocidad, dúplex, VLAN y config de trunk**.
+```ios
+SW2(config)# interface GigabitEthernet 0/3
+SW2(config-if)# switchport mode trunk
+SW2(config-if)# switchport trunk allowed vlan 10,20
+SW2(config-if)# exit
+```
 
-4. **¿Cuántos puertos de un EtherChannel puede bloquear STP?**
-   **Ninguno**: STP ve el canal como un **solo enlace** lógico.
+Al volver a revisar `show etherchannel summary`, Gi0/3 debería pasar a
+`(P)` en unos segundos, sin necesidad de tocar el `channel-group`.
 
-5. **¿Qué hace el balanceo `src-dst-ip`?**
-   Distribuye cada flujo (misma IP origen/destino) por un único enlace del canal.
+## Balanceo de carga: por qué un enlace se ve más cargado que otros
 
-## Resumen
+Con el canal ya arriba, es común notar en `show interfaces` que un puerto del
+Port-channel mueve mucho más tráfico que los otros tres. Esto no es un fallo:
+por defecto, el switch reparte el tráfico calculando un **hash** sobre la IP
+origen y destino (`src-dst-ip`), y cada flujo (misma combinación de IPs)
+siempre usa el mismo enlace, para no desordenar los paquetes de una misma
+conexión TCP. Si hay pocos flujos con mucho tráfico (por ejemplo, un backup
+masivo entre dos servidores), el hash puede mandarlos todos al mismo enlace.
 
-- **EtherChannel** agrupa 2-8 enlaces físicos en un Port-Channel lógico.
-- **LACP** (802.3ad, `active`/`passive`) y **PAgP** (Cisco, `desirable`/`auto`)
-  negocian el canal; `on` lo fuerza.
-- Los puertos deben ser **idénticos** (velocidad, VLAN, trunk).
-- La config se hace en `interface Port-channel N`.
-- El **balanceo por flujo** reparte el tráfico entre los enlaces del canal.
+Cambiar el criterio del hash a puertos TCP/UDP suele repartir mejor cuando el
+tráfico es de pocas IPs pero muchas conexiones distintas:
+
+```ios
+SW1(config)# port-channel load-balance src-dst-port
+```
+
+Se verifica con:
+
+```ios
+SW1# show etherchannel load-balance
+EtherChannel Load-Balancing Configuration: src-dst-port
+```
+
+No existe un método que garantice un reparto perfecto — el balanceo siempre
+es por flujo, no por paquete individual —, pero elegir el campo del hash
+según el tipo de tráfico real de la red ayuda a evitar que un solo enlace
+cargue con todo.
+
+## En resumen
+
+- STP bloquea enlaces redundantes; EtherChannel los agrupa en un Port-channel
+  lógico para que STP no bloquee nada y se aproveche todo el ancho de banda.
+- LACP (`active`/`passive`) es el protocolo estándar para negociar el canal;
+  PAgP es la alternativa propietaria de Cisco.
+- La configuración va en `interface Port-channel N`, no en cada puerto físico.
+- Si un puerto no entra al canal (`(D)` o `(I)` en vez de `(P)`), revisa que
+  su configuración sea idéntica a la de los demás puertos del grupo.
+- El balanceo de carga es por flujo; el campo del hash (`port-channel
+load-balance`) se ajusta según cómo se comporte realmente el tráfico.

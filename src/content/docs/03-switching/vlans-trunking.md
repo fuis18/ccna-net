@@ -3,15 +3,15 @@ title: VLANs y Trunking (802.1Q)
 description: "VLANs: segmentación del dominio de broadcast, tipos de VLAN, puertos access y trunk, etiquetado 802.1Q y configuración en switches Cisco."
 ---
 
-Una **VLAN** (Virtual LAN) es un dominio de broadcast separado de forma lógica
-dentro del mismo switch. Dos estaciones en VLANs distintas no se ven entre sí
-ni intercambian tráfico de broadcast, aunque estén en el mismo equipo.
+Una **VLAN** es un dominio de broadcast separado de forma lógica dentro del
+switch. Dos estaciones en VLANs distintas no se ven entre sí ni intercambian
+broadcast, aunque estén conectadas al mismo equipo.
 
 ## ¿Por qué usar VLANs?
 
 | Beneficio            | Descripción                                                                 |
 | :------------------- | :-------------------------------------------------------------------------- |
-| Segmentación         | Divide el dominio de broadcast (la VLAN 1 lo comparte todo)                 |
+| Segmentación         | Divide el dominio de broadcast                                              |
 | Seguridad            | Aísla usuarios y departamentos entre sí                                     |
 | Organización         | Agrupa por función (ventas, IT, invitados) sin importar la ubicación física |
 | Reducción de tráfico | Limita broadcasts y multicast al grupo correspondiente                      |
@@ -19,60 +19,6 @@ ni intercambian tráfico de broadcast, aunque estén en el mismo equipo.
 
 > Sin VLANs, todo el switch comparte un único dominio de broadcast. Cuanto más
 > grande el dominio, más tráfico de broadcast y menos rendimiento.
-
-## Tipos de VLAN
-
-| VLAN             | Descripción                                             |
-| :--------------- | :------------------------------------------------------ |
-| VLAN por defecto | La **VLAN 1**, no se puede borrar ni renombrar          |
-| VLAN de datos    | Transporta tráfico de usuarios                          |
-| VLAN de gestión  | Transporta tráfico de administración (SSH, telnet)      |
-| VLAN nativa      | En un trunk, tramas sin etiqueta; por defecto la VLAN 1 |
-| VLAN de voz      | Separa el tráfico de teléfonos IP (prioridad QoS)       |
-
-## Puertos access y trunk
-
-Un puerto de switch puede configurarse de dos formas, según **qué hay conectado
-del otro lado**:
-
-- **Puerto access**: pertenece a una única VLAN y entrega tramas **sin
-  etiqueta**. Es el modo para un puerto conectado a un dispositivo final —una
-  PC, una impresora, un punto de acceso Wi-Fi— que no sabe nada de VLANs y
-  espera tramas Ethernet normales. El switch es el único que sabe a qué VLAN
-  pertenece ese puerto; el dispositivo conectado ni se entera.
-
-- **Puerto trunk**: transporta **varias VLANs** por el mismo cable físico,
-  etiquetando cada trama con 802.1Q para que el otro extremo sepa de qué VLAN
-  viene. Es el modo para un puerto conectado a **otro switch** (o a un router,
-  o a un servidor con NIC virtualizada) que sí necesita distinguir tráfico de
-  varias VLANs a la vez.
-
-**Por qué la diferencia importa:** si conectaras dos switches con un puerto
-**access**, solo podría cruzar el tráfico de una VLAN entre ellos — para tener
-la VLAN 10 y la VLAN 20 en ambos switches necesitarías un cable físico por
-cada VLAN. El trunk resuelve eso: un solo enlace lleva el tráfico de todas las
-VLANs necesarias, etiquetado para que cada switch sepa separarlo al llegar.
-
-**Regla práctica para elegir:**
-
-- ¿Del otro lado del cable hay **un dispositivo final** (PC, impresora, AP)? →
-  **access**, con la VLAN que le corresponda.
-- ¿Del otro lado hay **otro switch, un router, o algo que debe ver más de una
-  VLAN** por ese mismo enlace? → **trunk**.
-
-```mermaid
-graph TD
-    PC1[PC-A] -->|access VLAN 10| S1[SW1]
-    PC2[PC-B] -->|access VLAN 20| S1
-    S1 -->|"trunk 802.1Q<br/>VLANs 10 y 20"| S2[SW2]
-    S2 -->|access VLAN 10| PC3[PC-C]
-    S2 -->|access VLAN 20| PC4[PC-D]
-```
-
-En el diagrama, PC-A y PC-C están en la misma VLAN 10 aunque cuelguen de
-switches distintos: eso solo es posible porque el enlace SW1–SW2 es un trunk
-que lleva ambas VLANs a la vez. Si ese enlace fuera access, PC-A y PC-C nunca
-podrían verse entre sí.
 
 ## Etiquetado 802.1Q
 
@@ -96,9 +42,9 @@ graph LR
     classDef tag fill:#fef3c7,stroke:#f59e0b,color:#92400e
     classDef field fill:#f3f4f6,stroke:#9ca3af,color:#111827
 
-    B1["MAC dest"] --> B2["MAC src"] --> B3["TPID"] --> B4["TCI"] --> B5["Tipo / Long."] --> B6["Datos"] --> B7["FCS"]
-    class B1,B2,B5,B6,B7 field
-    class B3,B4 tag
+    B1["MAC src"] --> B2["TPID"] --> B3["TCI"] --> B4["Tipo / Long."]
+    class B1,B4 field
+    class B2,B3 tag
 ```
 
 Los campos principales de la etiqueta (resaltada en amarillo, 4 bytes):
@@ -112,20 +58,31 @@ La *_VLAN nativa_ es la que se envía por el trunk **sin etiqueta** (por
 compatibilidad con equipos que no entienden 802.1Q). Debe ser la misma en ambos
 extremos del trunk.
 
-## Configuración de VLANs
+## Vlan para dispositivos finales (Access)
 
-### Crear una VLAN y asignar puertos
+En el piso donde tienes el switch tienes dos áreas el de ventas y de sistemas, así que para evitar el consumo de tráfico y un entorno de seguridad y privacidad entre áreas, necesitas que no puedan interactuar entre si.
+
+```mermaid
+graph TB
+    SW1 --> |f0/1| PC1
+    SW1 --> |f0/14| PC2
+```
 
 ```ios
-SW1# configure terminal
 SW1(config)# vlan 10
 SW1(config-vlan)# name Ventas
+SW1(config-vlan)# vlan 20
+SW1(config-vlan)# name Sistemas
 SW1(config-vlan)# exit
 
-SW1(config)# interface GigabitEthernet0/1
-SW1(config-if)# switchport mode access
-SW1(config-if)# switchport access vlan 10
-SW1(config-if)# exit
+SW1(config)# int range f0/1 - 12
+SW1(config-if-range)# switchport mode access
+SW1(config-if-range)# switchport access vlan 10
+SW1(config-if-range)# exit
+SW1(config)# int range f0/13 - 24
+SW1(config-if-range)# switchport mode access
+SW1(config-if-range)# switchport access vlan 20
+SW1(config-if-range)# exit
 ```
 
 | Comando                     | Función                            |
@@ -135,61 +92,133 @@ SW1(config-if)# exit
 | `switchport mode access`    | Marca el puerto como access        |
 | `switchport access vlan 10` | Asigna el puerto a la VLAN 10      |
 
-Para asignar varios puertos a la vez se usa `interface range`:
+> **Puerto access**: pertenece a una única VLAN y entrega tramas **sin
+> etiqueta**.
 
-```ios
-SW1(config)# interface range f0/1 - 8
-SW1(config-if-range)# switchport mode access
-SW1(config-if-range)# switchport access vlan 20
+## Vlan para equipos de red (Trunk)
+
+Ahora tienes que replicar la configuración al 2do piso, a diferencia de las pc, los switch deben poder distinguir la configuración vlan.
+
+```mermaid
+graph LR
+    PC1[PC-A] <--> |f0/1| S1[SW1]
+    S1 <-->|gi0/1| S2[SW2]
+    S2 <-->|f0/1| PC2[PC-B]
 ```
 
-### Configurar un trunk 802.1Q
-
 ```ios
-SW1(config-if)# switchport mode trunk
-SW1(config-if)# switchport trunk native vlan 99
-SW1(config-if)# switchport trunk allowed vlan 10,20,99
+SW1(config)# vlan 99
+SW1(config-vlan)# name Administración
+SW1(config-vlan)# exit
+SW1(config-vlan)# int range g0/1 - 2
+SW1(config-if-range)# switchport mode trunk
+SW1(config-if-range)# switchport trunk allowed vlan 99
 ```
 
-| Comando                           | Función                                    |
-| :-------------------------------- | :----------------------------------------- |
-| `switchport mode trunk`           | Fuerza el puerto a modo trunk              |
-| `switchport trunk native vlan 99` | Cambia la VLAN nativa (mejor que la 1)     |
-| `switchport trunk allowed vlan`   | Restringe las VLANs permitidas en el trunk |
-
-> **Buena práctica:** usa la **VLAN 1** solo como fallback y no pongas tráfico
-> de usuario en ella. Separa también la **VLAN de gestión**.
-
-### VLAN de voz
-
-Para teléfonos IP que comparten puerto con un PC, el teléfono se asigna a una
-VLAN de voz y el PC a la de datos:
+Lo mismo en el SW2
 
 ```ios
-SW1(config-if)# switchport mode access
-SW1(config-if)# switchport access vlan 10
-SW1(config-if)# switchport voice vlan 100
+SW2(config)# vlan 99
+SW2(config-vlan)# name Administración
+SW2(config-vlan)# int range g0/1 - 2
+SW2(config-if-range)# switchport mode trunk
+SW2(config-if-range)# switchport trunk allowed vlan 99
 ```
 
-## Verificación
+- SW1 y SW2 están conectados en la VLAN 99.
 
-```ios
-SW1# show vlan
-
-VLAN Name                             Status    Ports
----- -------------------------------- --------- -------------------------------
-1    default                          active    Gi0/2, Gi0/3, ...
-10   Ventas                           active    Gi0/1
-20   Informatica                      active
-...
-```
+Se verifica con:
 
 ```ios
 SW1# show interfaces trunk
 
 Port        Mode         Encapsulation  Status        Native vlan
-Gi0/24      on           802.1q         trunking      99
-...
+Gi0/1      on           802.1q         trunking      1
+```
+
+Si `Gi0/1` aparece en esa tabla como `trunking`, el enlace ya lleva la VLAN
+99 etiquetada entre los dos switches, y PC-A debería poder ver a PC-C.
+
+## VLAN Nativa (Native VLAN)
+
+Por defecto, la VLAN nativa es la **VLAN 1**. La VLAN nativa es la **única VLAN cuyo tráfico viaja SIN etiqueta (untagged)** a través de un enlace trunk (para mantener compatibilidad con equipos heredados).
+
+### El problema: Native VLAN Mismatch
+
+Si los dos extremos del trunk no coinciden en cuál es la VLAN nativa, el switch generará alertas CDP en los logs (`%CDP-4-NATIVE_VLAN_MISMATCH`) y provocará **fuga de tráfico entre VLANs distintas**.
+
+```ios
+SW1# show interfaces trunk
+Port      Native vlan
+Gi0/1    1
+
+SW2# show interfaces trunk
+Port      Native vlan
+Gi0/1    99
+```
+
+En este escenario, cualquier trama sin etiquetar que envíe SW1 (creyendo que es VLAN 1) será recibida por SW2 e interpretada erróneamente como parte de la VLAN 99.
+
+### Solución y Buenas Prácticas
+
+1. **Igualar la VLAN Nativa en ambos extremos:**
+
+```ios
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport trunk native vlan 99
+```
+
+```ios
+SW2(config)# interface GigabitEthernet0/1
+SW2(config-if)# switchport trunk native vlan 99
+```
+
+Buena práctica: usa una VLAN dedicada como nativa (no la VLAN 1) y que no
+tenga tráfico de usuarios — así, si alguna trama llega sin etiquetar por
+error, cae en una VLAN vacía y no se mezcla con tráfico real.
+
+## VLAN de voz
+
+Para teléfonos IP que comparten puerto con un PC, el teléfono se asigna a una
+VLAN de voz y el PC a la de datos:
+
+```ios
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+SW1(config-if)# switchport voice vlan 100
+```
+
+- **VLAN 10 (Datos):** Tráfico del PC (viaja sin etiqueta).
+- **VLAN 100 (Voz):** Tráfico del teléfono IP (viaja etiquetado con prioridad CoS 802.1p/Q).
+
+## Verificación
+
+**Vlans en modo access**
+
+```ios
+SW1# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Gi0/2
+10   Ventas                           active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+                                                Fa0/5, Fa0/6, Fa0/7, Fa0/8
+                                                Fa0/9, Fa0/10, Fa0/11, Fa0/12
+20   Sistemas                         active    Fa0/13, Fa0/14, Fa0/15, Fa0/16
+                                                Fa0/17, Fa0/18, Fa0/19, Fa0/20
+                                                Fa0/21, Fa0/22, Fa0/23, Fa0/24
+99   Administracion                   active
+100  Voz                              active
+```
+
+**Vlans en modo trunk**
+
+```ios
+SW1# show interfaces trunk
+
+Port        Mode         Encapsulation  Status        Native vlan
+Gi0/1       on           802.1q         trunking      99
 ```
 
 ## Preguntas tipo CCNA
@@ -213,12 +242,17 @@ Gi0/24      on           802.1q         trunking      99
 5. **¿Qué comando restringe las VLANs que cruzan un trunk?**
    `switchport trunk allowed vlan <lista>`.
 
-## Resumen
+## En resumen
 
-- Las VLANs segmentan el **dominio de broadcast** de forma lógica.
-- **Access** = un dispositivo final, una VLAN, sin etiqueta; **trunk** = enlace
-  entre switches/routers, varias VLANs, etiquetadas con 802.1Q.
-- 802.1Q inserta una etiqueta de 4 bytes en la trama; la VLAN nativa no se
-  etiqueta.
-- Se crean con `vlan <id>` + `name` y se asignan con `switchport access vlan`.
-- Verifica con `show vlan brief` y `show interfaces trunk`.
+- **Access** = una puerta a un solo cuarto: un dispositivo final, una VLAN,
+  sin etiqueta.
+- **Trunk** = el maletero del auto: varias VLANs a la vez, cada una
+  etiquetada con 802.1Q para no mezclarse.
+- La pregunta clave siempre es "¿qué hay del otro lado del cable?" — un
+  dispositivo final pide access; otro switch o router casi siempre pide trunk.
+- Si dos VLANs iguales en switches distintos no se ven entre sí, sospecha
+  primero del enlace entre los switches: probablemente sigue en access.
+- La VLAN nativa (la que va sin etiqueta) debe coincidir en ambos extremos
+  del trunk, o vas a ver tráfico mal clasificado.
+- Verifica con `show vlan brief` (puertos access) y `show interfaces trunk`
+  (puertos trunk, encapsulación, VLAN nativa).

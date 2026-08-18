@@ -60,32 +60,32 @@ acuerdo en cuál es la raíz, sin que nadie se lo diga manualmente.
 
 <div style="text-align:center;">
 
-<svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tres switches conectados en triángulo" style="max-width:500px;height:auto;place-self:anchor-center;">
+<svg viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tres switches conectados en triángulo" style="max-width:500px;height:auto;place-self:anchor-center;">
   <g fill="none" stroke="currentColor" stroke-opacity="0.5" stroke-width="2">
-    <line x1="200" y1="70" x2="80" y2="310"/>
-    <line x1="200" y1="70" x2="320" y2="310"/>
-    <line x1="80" y1="310" x2="320" y2="310"/>
+    <line x1="200" y1="70" x2="80" y2="220"/>
+    <line x1="200" y1="70" x2="320" y2="220"/>
+    <line x1="80" y1="220" x2="320" y2="220"/>
   </g>
   <g fill="none" stroke="currentColor" stroke-width="2">
     <rect class="stp-switch" x="150" y="50" width="100" height="40" rx="6"/>
-    <rect class="stp-switch" x="30" y="290" width="100" height="40" rx="6"/>
-    <rect class="stp-switch" x="270" y="290" width="100" height="40" rx="6"/>
+    <rect class="stp-switch" x="30" y="200" width="100" height="40" rx="6"/>
+    <rect class="stp-switch" x="270" y="200" width="100" height="40" rx="6"/>
   </g>
   <g fill="currentColor" font-size="14" text-anchor="middle">
     <text x="200" y="77">SW1</text>
-    <text x="80" y="317">SW2</text>
-    <text x="320" y="317">SW3</text>
+    <text x="80" y="227">SW2</text>
+    <text x="320" y="227">SW3</text>
   </g>
   <g fill="currentColor" fill-opacity="0.85" font-size="11" text-anchor="middle">
-    <text x="85" y="178">
-      <tspan x="85" dy="0">Designated</tspan>
-      <tspan x="85" dy="13">Port</tspan>
+    <text x="145" y="128">
+      <tspan x="105" dy="0">Designated</tspan>
+      <tspan x="105" dy="13">Port</tspan>
     </text>
-    <text x="315" y="178">
-      <tspan x="315" dy="0">Designated</tspan>
-      <tspan x="315" dy="13">Port</tspan>
+    <text x="285" y="128">
+      <tspan x="295" dy="0">Designated</tspan>
+      <tspan x="295" dy="13">Port</tspan>
     </text>
-    <text x="200" y="300">Bloqueado</text>
+    <text x="200" y="250">Bloqueado</text>
   </g>
 </svg>
 
@@ -271,7 +271,7 @@ gana velocidad para los hosts sin dejar la puerta abierta a que alguien
 conecte un switch no autorizado.
 
 ```ios
-SW1(config)# interface GigabitEthernet0/1
+SW1(config)# interface FastEthernet0/1
 SW1(config-if)# spanning-tree portfast
 SW1(config-if)# spanning-tree bpduguard enable
 ```
@@ -301,18 +301,18 @@ VLAN0010
 
 ### Comandos adicionales
 
-| Comando                                        | Función                                        |
-| :--------------------------------------------- | :--------------------------------------------- |
-| `spanning-tree vlan <id> priority <0-61440>`   | Cambia la prioridad manualmente (pasos de 4096)|
-| `spanning-tree vlan <id> port-priority <0-240>`| Cambia la prioridad del puerto (pasos de 16)   |
-| `spanning-tree portfast default`               | Activa PortFast en todos los puertos access    |
-| `spanning-tree bpduguard default`              | Activa BPDU guard en todos los puertos portfast|
-| `spanning-tree guard root`                     | Root guard: impide que el puerto sea la raíz   |
-| `spanning-tree bpdufilter enable`              | Descarta BPDUs sin deshabilitar el puerto      |
-| `spanning-tree uplinkfast`                     | Acelera la convergencia del root port          |
-| `show spanning-tree summary`                   | Resumen del estado de STP en el switch         |
-| `show spanning-tree root`                      | Muestra el root bridge de cada VLAN            |
-| `errdisable recovery cause bpduguard`          | Rehabilita puertos errdisable por BPDU guard   |
+| Comando                                         | Función                                         |
+| :---------------------------------------------- | :---------------------------------------------- |
+| `spanning-tree vlan <id> priority <0-61440>`    | Cambia la prioridad manualmente (pasos de 4096) |
+| `spanning-tree vlan <id> port-priority <0-240>` | Cambia la prioridad del puerto (pasos de 16)    |
+| `spanning-tree portfast default`                | Activa PortFast en todos los puertos access     |
+| `spanning-tree bpduguard default`               | Activa BPDU guard en todos los puertos portfast |
+| `spanning-tree guard root`                      | Root guard: impide que el puerto sea la raíz    |
+| `spanning-tree bpdufilter enable`               | Descarta BPDUs sin deshabilitar el puerto       |
+| `spanning-tree uplinkfast`                      | Acelera la convergencia del root port           |
+| `show spanning-tree summary`                    | Resumen del estado de STP en el switch          |
+| `show spanning-tree root`                       | Muestra el root bridge de cada VLAN             |
+| `errdisable recovery cause bpduguard`           | Rehabilita puertos errdisable por BPDU guard    |
 
 ## Preguntas tipo CCNA
 

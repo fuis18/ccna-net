@@ -10,13 +10,14 @@ como OSPF). Este tema cubre las rutas estáticas y la ruta por defecto.
 
 ## Tipos de rutas en la tabla
 
-| Origen         | Cómo aparece                        | Cómo se aprende      |
-| :------------- | :---------------------------------- | :------------------- |
-| Conectada      | `C` en `show ip route`              | Automáticamente (interfaz con IP) |
-| Estática       | `S`                                 | Comando `ip route`   |
-| Dinámica       | `O`, `D`, `R` según protocolo      | Protocolo de enrutamiento |
+| Origen    | Cómo aparece  | Cómo se aprende                   |
+| :-------- | :------------ | :-------------------------------- |
+| Conectada | `C`           | Automáticamente (interfaz con IP) |
+| Estática  | `S`           | Comando `ip route`                |
+| Dinámica  | `O`, `D`, `R` | Protocolo de enrutamiento         |
 
-```R1# show ip route
+```ios
+R1# show ip route
 Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
        D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
        ...
@@ -28,6 +29,7 @@ L       192.168.1.1/32 is directly connected, GigabitEthernet0/0
 S       10.0.0.0/8 [1/0] via 192.168.1.2
 S*      0.0.0.0/0 [1/0] via 192.168.1.254
 ```
+
 ## Rutas estáticas
 
 Una ruta estática se configura manualmente y no cambia salvo que la modifiques.
@@ -35,17 +37,19 @@ Es útil para redes pequeñas, rutas de respaldo y hacia la salida a internet.
 
 ### Sintaxis del comando `ip route`
 
-```ip route <red-destino> <máscara> {<IP-siguiente-salto> | <interfaz-de-salida>} [distancia-administrativa]
+```ios
+ip route <red-destino> <mask> {<IP-siguiente-salto> | <interfaz-de-salida>} [distancia-administrativa]
 ```
 
 ```ios
 R1(config)# ip route 10.1.0.0 255.255.0.0 GigabitEthernet0/1
 ```
-| Forma                      | Cuándo usarla                                       |
-| :------------------------- | :-------------------------------------------------- |
-| **IP del siguiente salto** | Cuando la ruta va hacia otro router (normal)        |
+
+| Forma                      | Cuándo usarla                                                                     |
+| :------------------------- | :-------------------------------------------------------------------------------- |
+| **IP del siguiente salto** | Cuando la ruta va hacia otro router (normal)                                      |
 | **Interfaz de salida**     | En enlaces punto a punto o para rutas sin ARP (ej. hacia el ISP en algunos casos) |
-| **Siguiente salto + AD**   | **Ruta flotante** de respaldo                       |
+| **Siguiente salto + AD**   | **Ruta flotante** de respaldo                                                     |
 
 ### Ruta flotante (respaldo)
 
@@ -61,10 +65,12 @@ R1(config)# ip route 10.0.0.0 255.0.0.0 192.168.2.2 150   # respaldo (AD 150)
 La **ruta por defecto** (`0.0.0.0/0`) captura todo el tráfico que no coincide
 con ninguna otra ruta de la tabla. Es la **gateway of last resort**.
 
-```R1(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.254
+```ios
+R1(config)# ip route 0.0.0.0 0.0.0.0 192.168.1.254
 ```
 
-```R1# show ip route
+```ios
+R1# show ip route
 S*   0.0.0.0/0 [1/0] via 192.168.1.254
 ```
 
@@ -82,6 +88,7 @@ graph LR
     R1 -->|"ruta default 0.0.0.0/0"| ISP[(Internet)]
     R1 -.->|"rutas estáticas hacia otras sucursales"| R2[R2]
 ```
+
 ## Rutas estáticas IPv6
 
 Con IPv6 se usa `ipv6 route`:
