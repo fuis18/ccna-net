@@ -75,6 +75,11 @@ $$\text{salto} = 256 - \text{octeto}$$
 | :-------------: | :-------------: | :-------------: | :-------------: |
 | 0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0 | 0 0 0 0 0 0 0 0 |
 
+| 1   | 1   | 1   | 1   | 1   | 1   | 1   | 1   |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 128 | 64  | 32  | 16  | 8   | 4   | 2   | 1   |
+| 128 | 192 | 224 | 240 | 248 | 252 | 254 | 255 |
+
 ## Direcciones especiales IPv4
 
 | Tipo                | Rango / dirección                         |
@@ -133,4 +138,3 @@ $$\text{salto} = 256 - \text{octeto}$$
 | Broadcast      | Sí               | No (solo multicast)     |
 | Vecinos        | ARP              | NDP / ICMPv6            |
 | Configuración  | DHCP             | SLAAC, DHCPv6, estática |
-

@@ -40,4 +40,9 @@ empresarial (802.1X).
 | WPA2/WPA3     | Estándares de seguridad inalámbrica actuales        |
 | 802.1X        | Autenticación empresarial por usuario               |
 
+## Ejercicio
+
+Añade el acceso inalámbrico al edificio con el
+[Ejercicio: Red Inalámbrica (Parte 4)](./ejercicio).
+
 Continúa con [el Módulo 6](../06-ip-services/) cuando domines las WLAN.

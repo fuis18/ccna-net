@@ -3,16 +3,6 @@ title: Referencia Técnica
 description: "Referencia técnica de Device Management: modos CLI, configuración básica, SSH y gestión de archivos IOS."
 ---
 
-## Modos de CLI (prompts)
-
-| Modo          | Prompt                 | Entrar               | Salir            |
-| :------------ | :--------------------- | :------------------- | :--------------- |
-| Usuario       | `Router>`              | Inicial              | `exit`           |
-| Privilegiado  | `Router#`              | `enable`             | `disable`        |
-| Config global | `Router(config)#`      | `configure terminal` | `end` / `Ctrl+Z` |
-| Línea         | `Router(config-line)#` | `line console 0`     | `exit`           |
-| Interfaz      | `Router(config-if)#`   | `interface Gi0/0`    | `exit`           |
-
 ## Atajos de CLI
 
 ```ios
@@ -44,9 +34,8 @@ line vty 0 4
  password cisco123
  login
  exit
-end
 
-copy running-config startup-config
+do copy running-config startup-config
 ```
 
 ## Configuración SSH (template)
@@ -64,9 +53,8 @@ line vty 0 4
  transport input ssh
  login local
  exit
-end
 
-copy running-config startup-config
+do copy running-config startup-config
 ```
 
 ### Verificación

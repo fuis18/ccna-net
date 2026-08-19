@@ -54,5 +54,10 @@ y cómo gestionar el archivo de imagen del sistema operativo.
 | running-config    | Configuración activa, vive en RAM (se pierde al reiniciar) |
 | startup-config    | Configuración guardada, vive en NVRAM (persistente)  |
 
-Continúa con [el Módulo 3](../03-switching/) cuando domines la administración de
-dispositivos.
+## Ejercicio
+
+Ponlo en práctica con el [Ejercicio: Puesta en Marcha del Edificio (Parte 1)](./ejercicio),
+la primera parte de la configuración incremental del edificio.
+
+Continúa con [el Módulo 3](../03-network-configuration/) cuando domines la
+administración de dispositivos.

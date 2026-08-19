@@ -1,65 +1,11 @@
 ---
 title: Cheat Sheet (Referencia Técnica)
-description: "Referencia técnica de Switching: VLANs y trunks, STP/RSTP, EtherChannel y seguridad de capa 2."
+description: "Referencia técnica de Redundancia y Seguridad: STP/RSTP, EtherChannel, métricas y distancia administrativa, FHRP/HSRP y seguridad de capa 2."
 ---
-
-## Tipos de VLAN
-
-| VLAN | Descripción |
-| :--- | :--- |
-| Por defecto | VLAN 1, no se puede borrar ni renombrar |
-| Datos | Tráfico de usuarios |
-| Gestión | Administración (SSH, telnet) |
-| Nativa | En trunk, tramas sin etiqueta (default VLAN 1) |
-| Voz | Teléfonos IP (QoS) |
-
-802.1Q: etiqueta de 4 bytes; VID de 12 bits → hasta **4094** VLANs.
-
-## Configuración de VLANs
-
-```ios
-vlan 10
- name Ventas
- exit
-interface GigabitEthernet0/1
- switchport mode access
- switchport access vlan 10
-
-interface range GigabitEthernet0/1 - 24
- switchport mode access
- switchport access vlan 20
-```
-
-## Trunk 802.1Q
-
-```ios
-interface GigabitEthernet0/24
- switchport mode trunk
- switchport trunk native vlan 99
- switchport trunk allowed vlan 10,20,99
-```
-
-## VLAN de voz
-
-```ios
-interface GigabitEthernet0/5
- switchport mode access
- switchport access vlan 10
- switchport voice vlan 100
-```
-
-## Verificación switching
-
-```ios
-show vlan brief
-show interfaces trunk
-show interfaces status
-show mac address-table
-```
 
 ## STP / RSTP
 
-| Datos | Valor |
+| Dato | Valor |
 | :--- | :--- |
 | Prioridad root por defecto | 32768 (pasos de 4096) |
 | Bridge ID | Prioridad + MAC (menor gana) |
@@ -121,6 +67,66 @@ port-channel load-balance src-dst-ip    # default
 ```ios
 show etherchannel summary      # (SU)=up, (P)=bundled
 show etherchannel load-balance
+```
+
+## Métricas y Distancia Administrativa
+
+| Fuente | AD |
+| :--- | :--- |
+| Conectada | 0 |
+| Estática | 1 |
+| EIGRP | 90 |
+| OSPF | 110 |
+| RIP | 120 |
+| Flotante (manual) | 150 |
+| iBGP | 200 |
+
+### Métricas por protocolo
+
+| Protocolo | Métrica |
+| :--- | :--- |
+| OSPF | Coste = 100 000 / ancho de banda (10 Mbps=100, 100 Mbps=10, 1 Gbps=1) |
+| EIGRP | Banda mínima + retardo, ×256 |
+| RIP | Saltos (hops) |
+
+```ios
+interface GigabitEthernet0/1
+ bandwidth 1000000        # ajusta coste OSPF
+ delay 10                 # retardo EIGRP
+
+router ospf 1
+ auto-cost reference-bandwidth 10000   # para enlaces >= 1 Gbps
+```
+
+Selección de ruta: **prefijo más largo → menor AD → menor métrica**. `show ip route` muestra `[AD/métrica]`.
+
+## FHRP / HSRP
+
+| Protocolo | Estándar | Roles | Balanceo |
+| :--- | :--- | :--- | :--- |
+| HSRP | Cisco | Active / Standby | No |
+| VRRP | RFC 3768 | Master / Backup | No |
+| GLBP | Cisco | AVG / AVF | Sí |
+
+```ios
+interface GigabitEthernet0/0
+ ip address 192.168.1.1 255.255.255.0
+ standby version 2
+ standby 1 ip 192.168.1.254
+ standby 1 priority 150
+ standby 1 preempt
+ standby 1 track GigabitEthernet0/1 30
+```
+
+| Comando | Función |
+| :--- | :--- |
+| `standby <g> ip <IP>` | IP virtual del grupo |
+| `standby <g> priority <n>` | Mayor prioridad = Active (default 100) |
+| `standby <g> preempt` | Recuperar el papel de Active |
+| `standby <g> track <if> <decr>` | Reduce prioridad si cae el enlace |
+
+```ios
+show standby
 ```
 
 ## Seguridad de capa 2

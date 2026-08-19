@@ -41,5 +41,10 @@ puerto.
 | NTP      | Sincronización de hora en la red                    |
 | ACL      | Lista de permisos/denegaciones de tráfico           |
 
-Este es el último módulo de la guía. Si dominas todos los temas, ya tienes una
-base sólida para los objetivos del examen CCNA.
+## Ejercicio
+
+Cierra el edificio con los servicios IP usando el
+[Ejercicio: Servicios IP (Parte 5)](./ejercicio).
+
+Continúa con [el Módulo 7](../07-internet-wan/) para configurar en detalle la
+conexión con el ISP y dejar el edificio conectado a internet.

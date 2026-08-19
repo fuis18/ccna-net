@@ -12,10 +12,11 @@ hero:
 
 ## Cómo usar esta guía
 
-Esta guía está organizada en 5 módulos que cubren los temas esenciales de redes.
+Esta guía está organizada en 7 módulos que cubren los temas esenciales de redes.
 Se recomienda seguirlos en orden, aunque cada capítulo puede consultarse de forma independiente.
-
-## Contenido
+Cada módulo (del 2 al 7) termina con un **ejercicio incremental** que retoma la
+configuración del anterior, hasta completar un edificio de un piso de principio
+a fin.
 
 ### [1. Network Fundamentals](01-network-fundamentals/)
 
@@ -35,25 +36,29 @@ Administración y configuración inicial de dispositivos de red: acceso por cons
 - [Acceso Remoto Seguro (SSH vs. Telnet)](02-device-management/secure-remote-access)
 - [Gestión de Archivos y Sistema Operativo (IOS / Running-Config)](02-device-management/ios-file-management)
 
-### [3. Switching](03-switching/)
+### [3. Configuración de Red (Switching & Routing)](03-network-configuration/)
 
-Conmutación en capa 2: VLANs y trunking, protocolos de árbol de expansión,
-agregación de enlaces y seguridad de capa 2.
+El flujo de configuración de una red LAN, de principio a fin: VLANs y trunking,
+direccionamiento IP en switch y router, subinterfaces (router-on-a-stick), rutas
+estáticas y protocolos de enrutamiento dinámico.
 
-- [VLANs y Trunking (802.1Q)](03-switching/vlans-trunking)
-- [Spanning Tree Protocol (STP / RSTP)](03-switching/spanning-tree-protocol)
-- [EtherChannel (LACP / PAgP)](03-switching/etherchannel)
-- [Seguridad de Capa 2](03-switching/layer-2-security)
+- [VLANs y Trunking (802.1Q)](03-network-configuration/vlans-trunking)
+- [Direccionamiento IP (Switch y Router)](03-network-configuration/addressing)
+- [Subinterfaces (Router-on-a-Stick)](03-network-configuration/subinterfaces)
+- [Rutas Estáticas y Default](03-network-configuration/static-default-routes)
+- [Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)](03-network-configuration/routing-protocols)
 
-### [4. Routing](04-routing/)
+### [4. Redundancia y Seguridad](04-redundancy-security/)
 
-Enrutamiento entre redes: rutas estáticas y default, OSPFv2, métricas y distancia
-administrativa, y protocolos FHRP.
+Los temas que hacen que la red siga funcionando cuando algo falla o cuando
+alguien intenta entrar: Spanning Tree, EtherChannel, métricas y distancia
+administrativa, FHRP y seguridad de capa 2.
 
-- [Rutas Estáticas y Default](04-routing/static-default-routes)
-- [OSPFv2 (Área Única y Multi-área)](04-routing/ospfv2)
-- [Métricas y Distancia Administrativa](04-routing/metrics-administrative-distance)
-- [First Hop Redundancy (FHRP / HSRP)](04-routing/fhrp-hsrp)
+- [Spanning Tree Protocol (STP / RSTP)](04-redundancy-security/spanning-tree-protocol)
+- [EtherChannel (LACP / PAgP)](04-redundancy-security/etherchannel)
+- [Métricas y Distancia Administrativa](04-redundancy-security/metrics-administrative-distance)
+- [First Hop Redundancy (FHRP / HSRP)](04-redundancy-security/fhrp-hsrp)
+- [Seguridad de Capa 2](04-redundancy-security/layer-2-security)
 
 ### [5. Wireless Networks (WLAN)](05-wireless-networks/)
 
@@ -71,3 +76,10 @@ Servicios IP y mantenimiento: NAT/PAT, DHCP/DNS/NTP y listas de control de acces
 - [NAT / PAT](06-ip-services/nat-pat)
 - [DHCP / DNS / NTP](06-ip-services/dhcp-dns-ntp)
 - [Listas de Control de Acceso (ACLs)](06-ip-services/acls)
+
+### [7. Conexión a Internet y Enlaces WAN](07-internet-wan/)
+
+La frontera del edificio con internet: qué es un ISP, tipos de enlaces WAN,
+encapsulaciones HDLC/PPP y la configuración del enlace de borde.
+
+- [Conexión al ISP (Enlaces WAN)](07-internet-wan/conexion-isp)
