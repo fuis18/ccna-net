@@ -141,31 +141,6 @@ ipv6 route 2001:db8:10::/64 2001:db8:1::2
 ipv6 route ::/0 2001:db8:1::254
 ```
 
-## Conexión al ISP (Enlaces WAN)
-
-| Tipo de enlace | Interfaz | Notas |
-| :--- | :--- | :--- |
-| Línea dedicada | `Serial` | Encapsulación HDLC (Cisco) o PPP (estándar) |
-| Fibra / Metro Ethernet | `GigabitEthernet` | IP + `no shutdown`, como una LAN |
-
-```ios
-# Línea dedicada (serial)
-interface Serial0/0/0
- ip address 10.0.0.1 255.255.255.252
- encapsulation ppp
- no shutdown
-
-# IP por DHCP del ISP (fibra/cable)
-interface GigabitEthernet0/1
- ip address dhcp
-
-# Ruta por defecto hacia el ISP
-ip route 0.0.0.0 0.0.0.0 10.0.0.2
-```
-
-- Enlace hacia el ISP: subred **/30** (2 hosts).
-- Salida a internet = ruta por defecto + **NAT/PAT** (ver Módulo 6).
-
 ## Distancia Administrativa (AD)
 
 | Fuente            | AD  |

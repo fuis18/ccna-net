@@ -39,14 +39,6 @@ destino específico en la tabla de enrutamiento.
 
 - [Rutas Estáticas y Default](./static-default-routes)
 
-### Conexión al ISP (Enlaces WAN)
-
-La frontera del edificio con internet: qué es un ISP, tipos de enlace WAN,
-encapsulaciones HDLC/PPP y la ruta por defecto hacia el proveedor. La
-configuración del enlace al ISP se practica en el ejercicio de este módulo.
-
-- [Conexión al ISP (Enlaces WAN)](./conexion-isp)
-
 ### Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)
 
 Los routers aprenden las rutas solos: OSPF en detalle, EIGRP y RIP con sus
@@ -64,7 +56,6 @@ métricas, configuración y verificación.
 | Subinterfaz        | Interfaz lógica por VLAN en el router (802.1Q)  |
 | Ruta estática      | Ruta configurada manualmente                    |
 | Ruta default       | Ruta `0.0.0.0/0` para tráfico sin coincidencia  |
-| ISP / Enlace WAN   | Salida a internet (HDLC/PPP, ruta por defecto)  |
 | OSPF / EIGRP / RIP | Protocolos dinámicos (AD 110 / 90 / 120)        |
 
 ## Referencia rápida

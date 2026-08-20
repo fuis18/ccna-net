@@ -46,7 +46,6 @@ estáticas y protocolos de enrutamiento dinámico.
 - [Direccionamiento IP (Switch y Router)](03-network-configuration/addressing)
 - [Subinterfaces (Router-on-a-Stick)](03-network-configuration/subinterfaces)
 - [Rutas Estáticas y Default](03-network-configuration/static-default-routes)
-- [Conexión al ISP (Enlaces WAN)](03-network-configuration/conexion-isp)
 - [Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)](03-network-configuration/routing-protocols)
 
 ### [4. Redundancia y Seguridad](04-redundancy-security/)
@@ -75,5 +74,6 @@ de WLANs y seguridad inalámbrica.
 Servicios IP y mantenimiento: NAT/PAT, DHCP/DNS/NTP y listas de control de acceso.
 
 - [NAT / PAT](06-ip-services/nat-pat)
+- [Conexión al ISP (Enlaces WAN)](06-ip-services/conexion-isp)
 - [DHCP / DNS / NTP](06-ip-services/dhcp-dns-ntp)
 - [Listas de Control de Acceso (ACLs)](06-ip-services/acls)

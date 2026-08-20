@@ -1,16 +1,15 @@
 ---
 title: "Ejercicio: Red de un Piso"
-description: "Ejercicio 2: VLANs, direccionamiento, subinterfaces, routing y conexión al ISP sobre la configuración básica del edificio."
+description: "Ejercicio 2: VLANs, direccionamiento, subinterfaces y routing entre VLANs sobre la configuración básica del edificio."
 ---
 
-Ahora vas a hacer que la red **funcione**: segmentar en VLANs, dar direccionamiento, enrutar entre
-VLANs con subinterfaces y dar salida hacia el ISP. Al terminar, una PC de
-Ventas podrá llegar a una de Sistemas y a internet.
+Ahora vas a hacer que la red **funcione**: segmentar en VLANs, dar
+direccionamiento y enrutar entre VLANs con subinterfaces (router-on-a-stick).
+Al terminar, una PC de Ventas podrá llegar a una de Sistemas y los switches
+serán administrables.
 
 ```mermaid
 graph TB
-    I[(Internet)] --- ISP
-    ISP[ISP] ---|10.0.0.0/30| R1
     SW1[SW1] ---|trunk| SW2[SW2]
     R1[R1] ---|trunk| SW1
     SW1 --- V1[PC Ventas<br/>192.168.10.10]
@@ -26,14 +25,16 @@ graph TB
 - **10 Ventas** (192.168.10.0/24)
 - **20 Sistemas** (192.168.20.0/24)
 - **99 Administración** (192.168.99.0/24, nativa)
-- el enlace al ISP en **10.0.0.0/30**.
+
+> La salida a internet se configura en el [Módulo 6](../06-ip-services/), con
+> el tema [Conexión al ISP (Enlaces WAN)](../06-ip-services/conexion-isp).
 
 ## Objetivos
 
 1. Crear y asignar las VLANs en los switches.
 2. Levantar los trunks SW1-SW2 y SW1-R1.
 3. Dar direccionamiento: SVI de gestión y subinterfaces en R1.
-4. Configurar la conexión al ISP (enlace WAN + ruta default).
+4. Enrutar entre VLANs (router-on-a-stick).
 5. Verificar de extremo a extremo.
 
 ## Pasos
@@ -111,63 +112,8 @@ R1(config-subif)# exit
 # VLAN 99 (nativa): se atiende en la interfaz física, sin etiqueta
 R1(config)# interface GigabitEthernet0/0
 R1(config-if)# ip address 192.168.99.254 255.255.255.0
-```
-
-### 5. Conexión al ISP y ruta default
-
-> La teoría completa — qué es un ISP, tipos de enlace, encapsulaciones HDLC/PPP
-> y qué hay del otro lado del cable — está en
-> [Conexión al ISP (Enlaces WAN)](./conexion-isp). Aquí la pones en práctica.
-
-```ios
-R1(config)# interface Serial0/0/0        # o la interfaz WAN que corresponda
-R1(config-if)# description Enlace WAN hacia el ISP
-R1(config-if)# ip address 10.0.0.1 255.255.255.252
-R1(config-if)# no shutdown
-R1(config-if)# exit
-R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2
-R1(config)# end
-```
-
-**Encapsulación.** Si el equipo del ISP es de **Cisco**, HDLC (la de por
-defecto) es suficiente. Si es de **otro fabricante**, usa **PPP**, la
-encapsulación estándar:
-
-```ios
-R1(config)# interface Serial0/0/0
-R1(config-if)# encapsulation ppp
-```
-
-Y si el proveedor exige autenticación, **CHAP** con la clave compartida (el
-nombre de usuario debe coincidir con el hostname del router del ISP):
-
-```ios
-R1(config)# username ISP password ClaveWan!
-R1(config)# interface Serial0/0/0
-R1(config-if)# ppp authentication chap
 R1(config-if)# end
 ```
-
-> En el lado del ISP ya hay una ruta de regreso hacia las redes
-> 192.168.10.0/24, 192.168.20.0/24 y 192.168.99.0/24 vía 10.0.0.1.
-
-### 6. (Opcional) Routing dinámico con OSPF
-
-Si en vez de rutas estáticas quieres practicar protocolos dinámicos, anuncia el
-enlace y deja las redes LAN como pasivas:
-
-```ios
-R1(config)# router ospf 1
-R1(config-router)# router-id 1.1.1.1
-R1(config-router)# network 10.0.0.0 0.0.0.3 area 0
-R1(config-router)# passive-interface default
-R1(config-router)# no passive-interface Serial0/0/0
-R1(config-router)# end
-```
-
-Puedes probar también **EIGRP** (`router eigrp 100`) o **RIP** (`router rip` +
-`version 2`) en el mismo enlace; revisa la comparativa en
-[Protocolos de Enrutamiento Dinámico](./routing-protocols).
 
 ## Verificación
 
@@ -186,18 +132,15 @@ SW1# show interfaces trunk
 R1# show ip interface brief
 R1# show vlans
 R1# show ip route
-R1# show interfaces Serial0/0/0
 ```
 
-Debes ver `C` para las tres subredes LAN, `S*` (o `O` si usaste OSPF) para el
-ISP, en `show vlans` las subinterfaces etiquetadas 10 y 20, y el serial en
-`up/up` con su encapsulación (HDLC o PPP).
+Debes ver `C` para las tres subredes LAN en la tabla y, en `show vlans`, las
+subinterfaces etiquetadas 10 y 20 (la 99 se atiende en la interfaz física).
 
 ### De extremo a extremo
 
 ```bash
 PC-Ventas# ping 192.168.20.10        # hacia la otra VLAN
-PC-Ventas# ping 10.0.0.2             # hacia el ISP
 PC-Sistemas# ping 192.168.99.1       # hacia la SVI de gestión del SW1
 ```
 
@@ -211,15 +154,13 @@ que las VLANs estén permitidas en él.
 | :-------------------------------- | :------------------------------------------ |
 | ¿PC Ventas llega a PC Sistemas?   | Sí, a través de R1 (router-on-a-stick)      |
 | ¿`show vlans` en R1?              | .10 y .20 etiquetadas; VLAN 99 en la física |
-| ¿Enlace al ISP?                   | Serial `up/up`, HDLC o PPP, 10.0.0.1/30     |
-| ¿Salida a internet?               | `S* 0.0.0.0/0` hacia 10.0.0.2               |
 | ¿Switches administrables por SSH? | Sí, desde 192.168.99.1 y .2                 |
 
 ## Resumen
 
 - La red quedó segmentada (VLANs) y **funcionando de extremo a extremo**.
-- El router enruta entre VLANs por subinterfaces y sale al ISP por el enlace WAN
-  y la ruta default.
+- El router enruta entre VLANs por subinterfaces (router-on-a-stick).
+- La salida a internet se añadirá en el [Módulo 6](../06-ip-services/).
 - Guarda la configuración en los tres equipos:
   `copy running-config startup-config`.
 

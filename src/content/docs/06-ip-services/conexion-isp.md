@@ -3,22 +3,18 @@ title: Conexión al ISP (Enlaces WAN)
 description: "Qué es un ISP, tipos de enlaces WAN (DSL, fibra, línea dedicada, Metro Ethernet), interfaces de borde, encapsulaciones HDLC/PPP y salida a internet."
 ---
 
-Toda la red del edificio que vienes configurando se usa para llegar a
-**internet**. La conexión la proporciona un **ISP** (Internet Service Provider,
-"proveedor de servicios de internet"): la empresa que te da el **enlace WAN**
-desde tu router de borde hasta su red, y con eso, salida al resto del mundo.
-Este tema cubre esa frontera: qué hay del otro lado del cable de R1 y cómo se
-configura.
+Este tema cubre la frontera de la red: qué hay del otro lado del cable de R1 y
+cómo se configura.
 
 ## ¿Qué es un ISP y qué te entrega?
 
 El **ISP** es el proveedor que conecta tu red con internet. Cuando contratas el
 servicio, el ISP te entrega:
 
-| Qué entrega           | Detalle                                                     |
-| :-------------------- | :---------------------------------------------------------- |
-| **Enlace WAN**        | El medio físico que llega hasta tu router de borde          |
-| **Dirección pública** | Una IP IPv4 pública (o un rango) para tu borde              |
+| Qué entrega           | Detalle                                                             |
+| :-------------------- | :------------------------------------------------------------------ |
+| **Enlace WAN**        | El medio físico que llega hasta tu router de borde                  |
+| **Dirección pública** | Una IP IPv4 pública (o un rango) para tu borde                      |
 | **Gateway del ISP**   | La IP del equipo del ISP al que apuntan tus rutas (salto siguiente) |
 
 ```mermaid
@@ -32,13 +28,13 @@ graph LR
 
 Según la tecnología del proveedor, el enlace llega de distintas formas:
 
-| Conexión                     | Medio               | Características                                   |
-| :--------------------------- | :------------------ | :------------------------------------------------ |
-| **DSL (ADSL/VDSL)**          | Par de cobre        | Económica, velocidad media, distancia limitada    |
-| **Cable (HFC)**              | Coaxial            | Uso doméstico/pequeña empresa                     |
-| **Fibra (FTTH/FTTP)**        | Fibra óptica       | Alta velocidad, bajo retardo                      |
+| Conexión                         | Medio             | Características                                         |
+| :------------------------------- | :---------------- | :------------------------------------------------------ |
+| **DSL (ADSL/VDSL)**              | Par de cobre      | Económica, velocidad media, distancia limitada          |
+| **Cable (HFC)**                  | Coaxial           | Uso doméstico/pequeña empresa                           |
+| **Fibra (FTTH/FTTP)**            | Fibra óptica      | Alta velocidad, bajo retardo                            |
 | **Línea dedicada (Leased Line)** | Par/coaxial/fibra | Enlace punto a punto garantizado (E1/T1, 2 Mbps-1 Gbps) |
-| **Metro Ethernet**           | Fibra              | Enlace Ethernet de empresa (10/100/1000 Mbps)     |
+| **Metro Ethernet**               | Fibra             | Enlace Ethernet de empresa (10/100/1000 Mbps)           |
 
 > En el examen CCNA la parte conceptual importa: saber distinguir que una
 > **línea dedicada** es un enlace punto a punto contratado (generalmente con
@@ -84,10 +80,10 @@ R1(config-if)# no shutdown
 En un enlace serial punto a punto hay que definir cómo se encapsulan las
 tramas:
 
-| Encapsulación | Estándar            | Características                                     |
-| :------------ | :------------------ | :-------------------------------------------------- |
-| **HDLC**      | Propietaria Cisco   | Por defecto en routers Cisco; sin autenticación     |
-| **PPP**       | RFC 1661 (abierta)  | Autenticación (PAP/CHAP), compresión, multilink     |
+| Encapsulación | Estándar           | Características                                 |
+| :------------ | :----------------- | :---------------------------------------------- |
+| **HDLC**      | Propietaria Cisco  | Por defecto en routers Cisco; sin autenticación |
+| **PPP**       | RFC 1661 (abierta) | Autenticación (PAP/CHAP), compresión, multilink |
 
 > **HDLC de Cisco** no es compatible con equipos de otros fabricantes; si el
 > equipo del ISP no es Cisco, hay que usar **PPP**. CCNA espera que sepas
@@ -102,11 +98,11 @@ R1(config-if)# encapsulation ppp
 El enlace hacia el ISP se numera con una **subred mínima** (normalmente `/30`,
 con solo 2 hosts: tu router y el del proveedor):
 
-| Elemento                | Ejemplo               |
-| :---------------------- | :-------------------- |
-| IP del enlace en R1     | 10.0.0.1 /30          |
-| IP del gateway del ISP  | 10.0.0.2 /30          |
-| IP pública de tu borde  | 200.200.200.1 (patada por NAT, ver [Módulo 6](../06-ip-services/nat-pat)) |
+| Elemento               | Ejemplo                                                                   |
+| :--------------------- | :------------------------------------------------------------------------ |
+| IP del enlace en R1    | 10.0.0.1 /30                                                              |
+| IP del gateway del ISP | 10.0.0.2 /30                                                              |
+| IP pública de tu borde | 200.200.200.1 (patada por NAT, ver [NAT / PAT](./nat-pat)) |
 
 En algunos contratos el ISP entrega la IP pública por **DHCP**, y el router la
 toma automáticamente como cliente:
@@ -121,14 +117,14 @@ R1(config-if)# no shutdown
 
 Con la interfaz WAN arriba, todo el tráfico sin destino local se envía al
 gateway del ISP con una **ruta por defecto** (detalle en
-[Rutas Estáticas y Default](./static-default-routes)):
+[Rutas Estáticas y Default](../03-network-configuration/static-default-routes)):
 
 ```ios
 R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2
 ```
 
 Para salir a internet además hace falta **NAT/PAT**, porque las redes internas
-usan IPs privadas; eso se configura en el [Módulo 6](../06-ip-services/nat-pat).
+usan IPs privadas; eso se configura en el [NAT / PAT](./nat-pat).
 
 ## Verificación
 

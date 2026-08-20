@@ -1,13 +1,14 @@
 ---
 title: "Ejercicio: Servicios IP"
-description: "Ejercicio incremental 5: DHCP, NAT/PAT, NTP y ACLs para dejar el edificio con servicios IP completos."
+description: "Ejercicio incremental 5: conexión al ISP (enlace WAN), DHCP, NAT/PAT, NTP y ACLs para dejar el edificio con servicios IP completos."
 ---
 
 Última parte de la serie. La red del edificio ya es funcional, redundante,
 segura e inalámbrica. Ahora le añades los **servicios IP** que la dejan
-operativa de forma autónoma: **DHCP** para asignar direcciones, **NAT/PAT** para
-salir a internet y **ACLs** para controlar el tráfico. Al terminar, las PCs se
-configuran solas, navegan y el acceso está controlado.
+operativa de forma autónoma: la **conexión al ISP** (enlace WAN y ruta por
+defecto), **DHCP** para asignar direcciones, **NAT/PAT** para salir a internet
+y **ACLs** para controlar el tráfico. Al terminar, las PCs se configuran solas,
+navegan y el acceso está controlado.
 
 ```mermaid
 graph LR
@@ -26,15 +27,46 @@ graph LR
 
 ## Objetivos
 
-1. Configurar **DHCP** para las VLANs 10, 20 y 30 en R1.
-2. Dar salida a internet con **NAT/PAT**.
-3. Controlar el tráfico con **ACLs** (Ventas solo al servidor; invitados aislados).
-4. Sincronizar la hora de los equipos con **NTP**.
-5. Verificar de extremo a extremo.
+1. Configurar la conexión al ISP: enlace WAN y ruta por defecto.
+2. Configurar **DHCP** para las VLANs 10, 20 y 30 en R1.
+3. Dar salida a internet con **NAT/PAT**.
+4. Controlar el tráfico con **ACLs** (Ventas solo al servidor; invitados aislados).
+5. Sincronizar la hora de los equipos con **NTP**.
+6. Verificar de extremo a extremo.
 
 ## Pasos
 
-### 1. DHCP en R1
+### 1. Conexión al ISP (enlace WAN)
+
+R1 sale a internet por el enlace hacia el ISP: IP del enlace y ruta por defecto.
+La teoría completa — tipos de enlace, encapsulaciones HDLC/PPP y qué hay del
+otro lado del cable — está en [Conexión al ISP (Enlaces WAN)](./conexion-isp).
+
+```ios
+R1(config)# interface Serial0/0/0        # o la interfaz WAN que corresponda
+R1(config-if)# description Enlace WAN hacia el ISP
+R1(config-if)# ip address 10.0.0.1 255.255.255.252
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2
+R1(config)# end
+```
+
+**Encapsulación.** Si el equipo del ISP es de **Cisco**, HDLC (la de por
+defecto) es suficiente. Si es de **otro fabricante**, usa **PPP** (estándar) y,
+si el proveedor lo exige, **CHAP**:
+
+```ios
+R1(config)# interface Serial0/0/0
+R1(config-if)# encapsulation ppp
+R1(config-if)# ppp authentication chap
+```
+
+> En el lado del ISP ya hay una ruta de regreso hacia las redes del edificio
+> vía 10.0.0.1. La IP pública que te entrega el proveedor es 200.200.200.1,
+> que usará el NAT del siguiente paso.
+
+### 2. DHCP en R1
 
 Excluye las direcciones de los equipos fijos (gateways, switches) y crea un
 pool por VLAN:
@@ -70,7 +102,7 @@ R1(dhcp-config)# lease 1
 > configuraste en los módulos anteriores: así, si falla R1, R2 sigue siendo el
 > gateway que las PCs ya conocen.
 
-### 2. NAT/PAT en la salida a internet
+### 3. NAT/PAT en la salida a internet
 
 ```ios
 R1(config)# access-list 1 permit 192.168.10.0 0.0.0.255
@@ -96,7 +128,7 @@ R1(config-if)# ip nat outside
 > El **`overload`** activa el PAT: todos los hosts comparten la única IP pública
 > 200.200.200.1 usando distintos puertos.
 
-### 3. ACLs de control
+### 4. ACLs de control
 
 ```ios
 # Invitados (VLAN 30) no acceden a la red interna
@@ -114,7 +146,7 @@ R1(config-subif)# ip access-group 102 in
 > Recuerda que las ACLs se evalúan **en orden** y que, al final de cada una, el
 > `permit ip any any` evita bloquear el resto del tráfico.
 
-### 4. NTP
+### 5. NTP
 
 Sincroniza los equipos del edificio con R1 como referencia:
 
@@ -128,6 +160,16 @@ AP1(config)# ntp server 192.168.99.254
 ```
 
 ## Verificación
+
+### Enlace WAN
+
+```ios
+R1# show interfaces Serial0/0/0
+R1# show ip route
+```
+
+Serial en `up/up` con su encapsulación (HDLC o PPP) y la ruta
+`S* 0.0.0.0/0` hacia 10.0.0.2.
 
 ### DHCP
 
@@ -169,6 +211,8 @@ PC-Ventas# ping 192.168.20.10   # solo al servidor (ACL 102)
 
 | Pregunta                         | Respuesta esperada                   |
 | :------------------------------- | :----------------------------------- |
+| ¿Enlace al ISP?                  | Serial `up/up`, HDLC o PPP, 10.0.0.1/30 |
+| ¿Ruta por defecto al ISP?        | `S* 0.0.0.0/0` via 10.0.0.2          |
 | ¿Las PCs obtienen IP por DHCP?   | Sí, pool de su VLAN con gateway .254 |
 | ¿Salida a internet?              | Sí, PAT con 200.200.200.1 (overload) |
 | ¿Invitados aislados?             | Sí (ACL 101)                         |
@@ -177,6 +221,8 @@ PC-Ventas# ping 192.168.20.10   # solo al servidor (ACL 102)
 
 ## Resumen
 
+- **Conexión al ISP**: enlace WAN con IP `/30` y ruta por defecto hacia el
+  proveedor (HDLC o PPP).
 - **DHCP** entrega IP, máscara, gateway y DNS a cada VLAN, excluyendo los
   equipos fijos.
 - **NAT/PAT** da salida a internet compartiendo la IP pública con `overload`.
