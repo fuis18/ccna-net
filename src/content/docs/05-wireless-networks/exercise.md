@@ -17,7 +17,7 @@ graph LR
 
 ## Requisitos
 
-- Red del [ejercicio anterior](../04-redundancy-security/ejercicio): VLANs 10,
+- Red del [ejercicio anterior](../04-redundancy-security/exercise): VLANs 10,
   20 y 99, switches redundantes y HSRP.
 - Un **AP autónomo** conectado por un puerto trunk de SW1.
 - Nuevo segmento **VLAN 30 - Invitados** (192.168.30.0/24), sin acceso a la red

@@ -56,7 +56,7 @@ y cómo gestionar el archivo de imagen del sistema operativo.
 
 ## Ejercicio
 
-Ponlo en práctica con el [Ejercicio: Puesta en Marcha del Edificio (Parte 1)](./ejercicio),
+Ponlo en práctica con el [Ejercicio: Puesta en Marcha del Edificio (Parte 1)](./exercise),
 la primera parte de la configuración incremental del edificio.
 
 Continúa con [el Módulo 3](../03-network-configuration/) cuando domines la

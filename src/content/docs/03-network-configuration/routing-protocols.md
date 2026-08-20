@@ -19,6 +19,13 @@ información entre sí y calculan las rutas. Los tres que pide CCNA son **OSPF**
 | Convergencia  | Rápida                    | Variable                          |
 | Escalabilidad | Grandes redes (áreas)     | Redes pequeñas/medianas           |
 
+- **LSA (Link-State Advertisement / Anuncio de Estado de Enlace):** Es un paquete de datos o mensaje informativo que un router envía a sus vecinos para notificar el estado de sus conexiones locales.
+- **LSDB (Link-State Database / Base de Datos de Estado de Enlace):** Es la base de datos organizada donde un router almacena todas las LSA que ha generado él mismo y las que ha recibido de los demás routers de la red (o área).
+
+Es la base de datos organizada donde un router almacena todas las LSA que ha generado él mismo y las que ha recibido de los demás routers de la red (o área).
+
+Es un paquete de datos o mensaje informativo que un router envía a sus vecinos para notificar el estado de sus conexiones locales.
+
 ## OSPF (el más detallado)
 
 **OSPF** (Open Shortest Path First) es de **estado de enlace** para IPv4

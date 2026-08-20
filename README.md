@@ -1,6 +1,6 @@
 # CCNA (Routers & Switches)
 
-CCNA study guide organized into 7 modules: network fundamentals, device management, network configuration, redundancy & security, wireless networks, IP services, and internet/WAN connectivity. Each module (2–7) ends with an incremental exercise that builds a single-floor building network from scratch.
+CCNA study guide organized into 6 modules: network fundamentals, device management, network configuration, redundancy & security, wireless networks, and IP services. Each module (2–6) ends with an incremental exercise that builds a single-floor building network from scratch.
 Built with [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/).
 
 ## Project Structure
@@ -37,7 +37,6 @@ src/content/docs/
 ├── 04-redundancy-security/        # 4. Redundancy and Security
 ├── 05-wireless-networks/          # 5. Wireless Networks (WLAN)
 ├── 06-ip-services/                # 6. IP Services and Maintenance
-└── 07-internet-wan/               # 7. Internet Connection and WAN Links
 ```
 
 ## Commands

@@ -3,7 +3,7 @@ title: "Ejercicio: Redundancia y Seguridad"
 description: "Ejercicio incremental 3: STP/RSTP, EtherChannel, HSRP y seguridad de capa 2 sobre la red del edificio."
 ---
 
-Tercera parte de la serie. La red del [ejercicio anterior](../03-network-configuration/ejercicio)
+Tercera parte de la serie. La red del [ejercicio anterior](../03-network-configuration/exercise)
 ya funciona; ahora la harás **redundante y segura**. Añade un segundo router de
 oficina (R2) y un segundo enlace entre switches para que la red sobreviva a
 fallas, y protege el acceso de capa 2 para que nadie pueda atacar desde un
@@ -22,11 +22,11 @@ graph LR
 
 ## Requisitos
 
-- Red funcional del [ejercicio anterior](../03-network-configuration/ejercicio):
+- Red funcional del [ejercicio anterior](../03-network-configuration/exercise):
   VLANs 10/20/99, trunks y router-on-a-stick con R1.
 - Se añade **R2**, un segundo router del edificio, conectado por trunk a SW1 y
   con su propio enlace al ISP (10.0.0.4/30, IP 10.0.0.5). Configúralo con la
-  base del [Módulo 2](../02-device-management/ejercicio) (hostname, secret, SSH).
+  base del [Módulo 2](../02-device-management/exercise) (hostname, secret, SSH).
 
 ## Objetivos
 

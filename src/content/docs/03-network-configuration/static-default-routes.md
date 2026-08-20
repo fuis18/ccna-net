@@ -26,6 +26,8 @@ graph LR
 
 ```ios
 R1(config)# ip route 10.0.0.0 255.0.0.0 192.168.2.2
+
+R1(config)# ip route 10.0.0.0 255.0.0.0 Serial0/0/0
 ```
 
 > Siguiente Salto (Next Hop): Es la dirección IP del próximo router en el camino que se hará cargo del paquete
@@ -111,7 +113,7 @@ entrada candidata. El router decide en este orden:
 2. Entre rutas del mismo destino pero de distinto origen, gana la de menor
    **distancia administrativa** — por eso la ruta flotante (AD 150) queda en
    espera mientras la primaria (AD 1) esté disponible.
-3. Entre rutas del mismo origen y mismo destino, gana la de menor **métrica** (distancia física).
+3. Entre rutas del mismo origen y mismo destino, gana la de menor **métrica** (distancia física)
 
 ## Verificación
 

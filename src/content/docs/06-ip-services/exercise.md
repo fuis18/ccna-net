@@ -20,7 +20,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../05-wireless-networks/ejercicio):
+- Red completa del [ejercicio anterior](../05-wireless-networks/exercise):
   VLANs 10/20/30/99, routing, redundancia, seguridad y WLANs.
 - Los switches tienen las **IPs de gestión excluidas** del pool DHCP.
 
@@ -187,6 +187,4 @@ PC-Ventas# ping 192.168.20.10   # solo al servidor (ACL 102)
   `copy running-config startup-config`.
 
 Con esto, el edificio de un piso queda **completo**: identificado, conectado,
-enrutado, redundante, seguro, inalámbrico y con servicios IP autónomos. Solo
-falta la frontera con internet, que se configura en detalle en la
-[Parte 6](../07-internet-wan/ejercicio).
+enrutado, redundante, seguro, inalámbrico y con servicios IP autónomos.

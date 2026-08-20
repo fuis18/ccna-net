@@ -64,7 +64,7 @@ protección de puertos no utilizados.
 ## Ejercicio
 
 Aplica todo lo anterior a la misma red del módulo anterior con el
-[Ejercicio: Redundancia y seguridad (parte 3)](./ejercicio).
+[Ejercicio: Redundancia y seguridad (parte 3)](./exercise).
 
 Continúa con [el Módulo 5](../05-wireless-networks/) cuando la red sea
 redundante y segura.

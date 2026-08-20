@@ -74,6 +74,7 @@ export default defineConfig({
             { label: 'Direccionamiento IP (Switch y Router)', slug: '03-network-configuration/addressing' },
             { label: 'Subinterfaces (Router-on-a-Stick)', slug: '03-network-configuration/subinterfaces' },
             { label: 'Rutas Estáticas y Default', slug: '03-network-configuration/static-default-routes' },
+            { label: 'Conexión al ISP (Enlaces WAN)', slug: '03-network-configuration/conexion-isp' },
             { label: 'Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)', slug: '03-network-configuration/routing-protocols' },
             { label: 'Referencia Técnica (Cheat Sheet)', slug: '03-network-configuration/cheat-sheet' },
             { label: 'Ejercicio: Red de un Piso', slug: '03-network-configuration/exercise' },
@@ -112,15 +113,6 @@ export default defineConfig({
             { label: 'Listas de Control de Acceso (ACLs)', slug: '06-ip-services/acls' },
             { label: 'Referencia Técnica (Cheat Sheet)', slug: '06-ip-services/cheat-sheet' },
             { label: 'Ejercicio: Servicios IP', slug: '06-ip-services/exercise' },
-          ],
-        },
-        {
-          label: '7. Conexión a Internet y Enlaces WAN',
-          items: [
-            { label: 'Visión general del módulo', slug: '07-internet-wan' },
-            { label: 'Conexión al ISP (Enlaces WAN)', slug: '07-internet-wan/conexion-isp' },
-            { label: 'Referencia Técnica (Cheat Sheet)', slug: '07-internet-wan/cheat-sheet' },
-            { label: 'Ejercicio: Conexión al ISP', slug: '07-internet-wan/exercise' },
           ],
         },
       ],

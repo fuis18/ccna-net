@@ -1,39 +1,39 @@
 ---
 title: "Ejercicio: Red de un Piso"
-description: "Ejercicio 2: VLANs, direccionamiento, subinterfaces y routing sobre la configuración básica del edificio."
+description: "Ejercicio 2: VLANs, direccionamiento, subinterfaces, routing y conexión al ISP sobre la configuración básica del edificio."
 ---
 
-Segunda parte de la serie. Sobre los equipos que dejaste configurados en el
-[ejercicio anterior](../02-device-management/ejercicio), ahora vas a hacer que
-la red **funcione**: segmentar en VLANs, dar direccionamiento, enrutar entre
+Ahora vas a hacer que la red **funcione**: segmentar en VLANs, dar direccionamiento, enrutar entre
 VLANs con subinterfaces y dar salida hacia el ISP. Al terminar, una PC de
 Ventas podrá llegar a una de Sistemas y a internet.
 
 ```mermaid
-graph LR
-    V[PC Ventas 192.168.10.10] --> SW1
-    S[PC Sistemas 192.168.20.10] --> SW2
+graph TB
+    I[(Internet)] --- ISP
+    ISP[ISP] ---|10.0.0.0/30| R1
     SW1[SW1] ---|trunk| SW2[SW2]
-    SW1 ---|trunk| R1[R1]
-    R1 ---|10.0.0.0/30| ISP[ISP]
-    ISP --- I[(Internet)]
+    R1[R1] ---|trunk| SW1
+    SW1 --- V1[PC Ventas<br/>192.168.10.10]
+    SW1 --- S1[PC Sistemas<br/>192.168.20.10]
+    SW2 --- V2[PC Ventas<br/>192.168.10.11]
+    SW2 --- S2[PC Sistemas<br/>192.168.20.11]
 ```
 
 ## Requisitos
 
-- Configuración básica de [Parte 1](../02-device-management/ejercicio): los
-  tres equipos con hostname, secret, SSH y config guardada, y la **interfaz WAN
-  de R1 hacia el ISP** ya documentada y activa.
-- VLANs planificadas: **10 Ventas** (192.168.10.0/24), **20 Sistemas**
-  (192.168.20.0/24), **99 Administración** (192.168.99.0/24, nativa), y el
-  enlace al ISP en **10.0.0.0/30**.
+- Configuración básica de [Parte 1](../02-device-management/exercise): los tres equipos con hostname, secret, SSH y config guardada.
+- VLANs planificadas:
+- **10 Ventas** (192.168.10.0/24)
+- **20 Sistemas** (192.168.20.0/24)
+- **99 Administración** (192.168.99.0/24, nativa)
+- el enlace al ISP en **10.0.0.0/30**.
 
 ## Objetivos
 
 1. Crear y asignar las VLANs en los switches.
 2. Levantar los trunks SW1-SW2 y SW1-R1.
 3. Dar direccionamiento: SVI de gestión y subinterfaces en R1.
-4. Enrutar entre VLANs (router-on-a-stick) y hacia el ISP (ruta default).
+4. Configurar la conexión al ISP (enlace WAN + ruta default).
 5. Verificar de extremo a extremo.
 
 ## Pasos
@@ -113,20 +113,39 @@ R1(config)# interface GigabitEthernet0/0
 R1(config-if)# ip address 192.168.99.254 255.255.255.0
 ```
 
-### 5. Enlace hacia el ISP y ruta default
+### 5. Conexión al ISP y ruta default
 
-> El enlace WAN hacia el ISP lo dejaste documentado en la Parte 1; aquí le
-> pones la IP y la ruta por defecto. La teoría completa — tipos de enlace,
-> encapsulaciones HDLC/PPP y qué hay del otro lado del cable — está en el
-> [Módulo 7](../07-internet-wan/), donde además lo configurarás en detalle.
+> La teoría completa — qué es un ISP, tipos de enlace, encapsulaciones HDLC/PPP
+> y qué hay del otro lado del cable — está en
+> [Conexión al ISP (Enlaces WAN)](./conexion-isp). Aquí la pones en práctica.
 
 ```ios
 R1(config)# interface Serial0/0/0        # o la interfaz WAN que corresponda
+R1(config-if)# description Enlace WAN hacia el ISP
 R1(config-if)# ip address 10.0.0.1 255.255.255.252
 R1(config-if)# no shutdown
 R1(config-if)# exit
 R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2
 R1(config)# end
+```
+
+**Encapsulación.** Si el equipo del ISP es de **Cisco**, HDLC (la de por
+defecto) es suficiente. Si es de **otro fabricante**, usa **PPP**, la
+encapsulación estándar:
+
+```ios
+R1(config)# interface Serial0/0/0
+R1(config-if)# encapsulation ppp
+```
+
+Y si el proveedor exige autenticación, **CHAP** con la clave compartida (el
+nombre de usuario debe coincidir con el hostname del router del ISP):
+
+```ios
+R1(config)# username ISP password ClaveWan!
+R1(config)# interface Serial0/0/0
+R1(config-if)# ppp authentication chap
+R1(config-if)# end
 ```
 
 > En el lado del ISP ya hay una ruta de regreso hacia las redes
@@ -167,10 +186,12 @@ SW1# show interfaces trunk
 R1# show ip interface brief
 R1# show vlans
 R1# show ip route
+R1# show interfaces Serial0/0/0
 ```
 
 Debes ver `C` para las tres subredes LAN, `S*` (o `O` si usaste OSPF) para el
-ISP, y en `show vlans` las subinterfaces etiquetadas 10 y 20.
+ISP, en `show vlans` las subinterfaces etiquetadas 10 y 20, y el serial en
+`up/up` con su encapsulación (HDLC o PPP).
 
 ### De extremo a extremo
 
@@ -190,14 +211,15 @@ que las VLANs estén permitidas en él.
 | :-------------------------------- | :------------------------------------------ |
 | ¿PC Ventas llega a PC Sistemas?   | Sí, a través de R1 (router-on-a-stick)      |
 | ¿`show vlans` en R1?              | .10 y .20 etiquetadas; VLAN 99 en la física |
+| ¿Enlace al ISP?                   | Serial `up/up`, HDLC o PPP, 10.0.0.1/30     |
 | ¿Salida a internet?               | `S* 0.0.0.0/0` hacia 10.0.0.2               |
 | ¿Switches administrables por SSH? | Sí, desde 192.168.99.1 y .2                 |
 
 ## Resumen
 
 - La red quedó segmentada (VLANs) y **funcionando de extremo a extremo**.
-- El router enruta entre VLANs por subinterfaces y sale al ISP por la ruta
-  default.
+- El router enruta entre VLANs por subinterfaces y sale al ISP por el enlace WAN
+  y la ruta default.
 - Guarda la configuración en los tres equipos:
   `copy running-config startup-config`.
 

@@ -12,9 +12,9 @@ hero:
 
 ## Cómo usar esta guía
 
-Esta guía está organizada en 7 módulos que cubren los temas esenciales de redes.
+Esta guía está organizada en 6 módulos que cubren los temas esenciales de redes.
 Se recomienda seguirlos en orden, aunque cada capítulo puede consultarse de forma independiente.
-Cada módulo (del 2 al 7) termina con un **ejercicio incremental** que retoma la
+Cada módulo (del 2 al 6) termina con un **ejercicio incremental** que retoma la
 configuración del anterior, hasta completar un edificio de un piso de principio
 a fin.
 
@@ -46,6 +46,7 @@ estáticas y protocolos de enrutamiento dinámico.
 - [Direccionamiento IP (Switch y Router)](03-network-configuration/addressing)
 - [Subinterfaces (Router-on-a-Stick)](03-network-configuration/subinterfaces)
 - [Rutas Estáticas y Default](03-network-configuration/static-default-routes)
+- [Conexión al ISP (Enlaces WAN)](03-network-configuration/conexion-isp)
 - [Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)](03-network-configuration/routing-protocols)
 
 ### [4. Redundancia y Seguridad](04-redundancy-security/)
@@ -76,10 +77,3 @@ Servicios IP y mantenimiento: NAT/PAT, DHCP/DNS/NTP y listas de control de acces
 - [NAT / PAT](06-ip-services/nat-pat)
 - [DHCP / DNS / NTP](06-ip-services/dhcp-dns-ntp)
 - [Listas de Control de Acceso (ACLs)](06-ip-services/acls)
-
-### [7. Conexión a Internet y Enlaces WAN](07-internet-wan/)
-
-La frontera del edificio con internet: qué es un ISP, tipos de enlaces WAN,
-encapsulaciones HDLC/PPP y la configuración del enlace de borde.
-
-- [Conexión al ISP (Enlaces WAN)](07-internet-wan/conexion-isp)
