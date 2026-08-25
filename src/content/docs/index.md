@@ -46,7 +46,8 @@ estáticas y protocolos de enrutamiento dinámico.
 - [Direccionamiento IP (Switch y Router)](03-network-configuration/addressing)
 - [Subinterfaces (Router-on-a-Stick)](03-network-configuration/subinterfaces)
 - [Rutas Estáticas y Default](03-network-configuration/static-default-routes)
-- [Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)](03-network-configuration/routing-protocols)
+- [OSPF (Open Shortest Path First)](03-network-configuration/ospf)
+- [EIGRP y RIP](03-network-configuration/eigrp-rip)
 
 ### [4. Redundancia y Seguridad](04-redundancy-security/)
 

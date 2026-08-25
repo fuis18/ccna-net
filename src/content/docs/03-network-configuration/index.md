@@ -39,12 +39,19 @@ destino específico en la tabla de enrutamiento.
 
 - [Rutas Estáticas y Default](./static-default-routes)
 
-### Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)
+### OSPF
 
-Los routers aprenden las rutas solos: OSPF en detalle, EIGRP y RIP con sus
-métricas, configuración y verificación.
+Estado de enlace con SPF/Dijkstra: áreas y backbone, métrica de coste,
+determinación del Router ID y elección de DR/BDR.
 
-- [Protocolos de Enrutamiento Dinámico (OSPF / EIGRP / RIP)](./routing-protocols)
+- [OSPF (Open Shortest Path First)](./ospf)
+
+### EIGRP y RIP
+
+Vector de distancia: la métrica compuesta de EIGRP con respaldo DUAL y los
+saltos de RIP, con comparativa final entre los tres protocolos.
+
+- [EIGRP y RIP](./eigrp-rip)
 
 ## Repaso rápido
 

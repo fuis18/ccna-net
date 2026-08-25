@@ -47,6 +47,39 @@ graph LR
     R -->|"src 200.200.200.1:1050"| I[(Internet)]
     R -->|"src 200.200.200.1:2090"| I
 ```
+## Las interfaces inside y outside
+
+NAT solo funciona si el router sabe **de qué lado está cada red**, y eso se le
+indica marcando las interfaces:
+
+- **`ip nat inside`** (interfaz **interna**): la que mira hacia la **red
+  privada** (la LAN, las IPs RFC 1918).
+- **`ip nat outside`** (interfaz **externa**): la que mira hacia el **ISP o
+  internet** (las IPs públicas).
+
+```mermaid
+graph LR
+    LAN[LAN 192.168.1.0/24] -->|"ip nat inside"| R[R1]
+    R -->|"ip nat outside"| ISP[(Internet)]
+```
+
+Con los sentidos marcados, la traducción ocurre al **cruzar de un lado al
+otro**: una trama que entra por una interfaz inside y sale por la outside ve
+traducida su IP de origen (privada → pública), y la respuesta que entra por la
+outside deshace la traducción antes de entregarla en la LAN.
+
+| Paso | Paquete                                    | Interfaz | Qué hace el router            |
+| :--- | :----------------------------------------- | :------- | :---------------------------- |
+| 1    | `src 192.168.1.10:1050 → 8.8.8.8:53`       | Entra por **inside**   | Marca el paquete como candidato a traducción |
+| 2    | Sale hacia internet                        | Sale por **outside**   | Traduce el origen: `200.200.200.1:1050`, y guarda la entrada en la tabla NAT |
+| 3    | Respuesta `8.8.8.8:53 → 200.200.200.1:1050` | Entra por **outside**  | Consulta la tabla y restaura el origen: `192.168.1.10:1050` |
+| 4    | Se entrega en la LAN                       | Sale por **inside**    | Entrega la trama al host original |
+
+> Sin las marcas, el router **no traduce nada**: el comando
+> `ip nat inside source ...` define *qué* y *cómo* traducir, pero son
+> `ip nat inside` / `ip nat outside` los que definen *dónde* — es el error más
+> común cuando "el NAT está bien configurado" pero no funciona.
+
 ## Configuración de NAT estático
 
 Permite que un servidor interno (ej. web) sea accesible desde internet con una
