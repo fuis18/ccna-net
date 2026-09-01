@@ -17,7 +17,7 @@ graph LR
 
 ## Requisitos
 
-- Red del [ejercicio anterior](../04-redundancy-security/exercise): VLANs 10,
+- Red del [ejercicio anterior](../05-redundancy-security/exercise): VLANs 10,
   20 y 99, switches redundantes y HSRP.
 - Un **AP autónomo** conectado por un puerto trunk de SW1.
 - Nuevo segmento **VLAN 30 - Invitados** (192.168.30.0/24), sin acceso a la red
@@ -44,7 +44,7 @@ SW1(config-if)# switchport trunk allowed vlan 10,20,30,99
 ```
 
 En el router, crea la subinterfaz y el grupo HSRP de la VLAN 30 (en R1 y R2,
-con el mismo procedimiento que viste en el Módulo 4):
+con el mismo procedimiento que viste en el Módulo 5):
 
 ```ios
 R1(config)# interface GigabitEthernet0/0.30
@@ -91,7 +91,7 @@ En los WLC o en el AP por GUI, cada SSID lleva su clave:
 
 Para que los invitados no alcancen la red interna, restringe en el router el
 tráfico entre la VLAN 30 y las VLANs 10/20. Eso se hace con **ACLs**, que
-verás en detalle en el [Módulo 6](../06-ip-services/acls); aquí lo dejas
+verás en detalle en el [Módulo 7](../07-ip-services/acls); aquí lo dejas
 anotado para aplicarlo al final:
 
 ```ios
@@ -141,5 +141,5 @@ Laptop# ping 192.168.30.50       # hacia un invitado: queda bloqueado por ACL
 - Cada WLAN usa **WPA2/WPA3** y queda mapeada a su VLAN.
 - Los invitados quedan **aislados** de la red interna mediante una ACL.
 
-En el [Módulo 6](../06-ip-services/) terminarás el edificio con los **servicios
+En el [Módulo 7](../07-ip-services/) terminarás el edificio con los **servicios
 IP**: DHCP automático, salida a internet con NAT/PAT y las ACLs.

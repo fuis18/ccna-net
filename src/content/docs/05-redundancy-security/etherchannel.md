@@ -54,6 +54,42 @@ compatibles: `active`-`passive`, `active`-`active` (LACP), o
 `passive`, o `auto` con `auto`, no funciona: ninguno de los dos inicia la
 negociación.
 
+## LACP vs PAgP: diferencia entre protocolos
+
+El mismo problema —negociar cuáles enlaces entran al canal— lo resuelven dos
+protocolos distintos. Se diferencian sobre todo en **quién lo define**:
+
+- **LACP (Link Aggregation Control Protocol)** está definido por el estándar
+  **IEEE 802.3ad / 802.1AX**. Al ser un estándar abierto, lo implementan todos
+  los fabricantes de switches. Intercambia tramas periódicas de control y
+  detecta por sí solo los puertos cuya configuración no coincide, dejándolos
+  fuera del canal.
+- **PAgP (Port Aggregation Protocol)** es una solución **propietaria de
+  Cisco**. Funciona de forma muy parecida (negocia, manda mensajes y comprueba
+  la coherencia de los puertos), pero solo entiende Cisco: en un extremo debe
+  haber un dispositivo Cisco con PAgP, así que no sirve para conectar un switch
+  de otra marca.
+
+La elección práctica se resume así:
+
+| Aspecto            | LACP                              | PAgP                             |
+| :----------------- | :-------------------------------- | :------------------------------- |
+| Origen             | Estándar IEEE 802.3ad / 802.1AX   | Propietario Cisco                |
+| Interoperabilidad  | Sí, con cualquier fabricante      | Solo entre equipos Cisco         |
+| Modos de inicio    | `active` / `passive`              | `desirable` / `auto`             |
+| Detección de errores | Comprueba coherencia por sí mismo | Similar, pero solo Cisco         |
+| Cuándo usarlo      | Redes heterogéneas o por estándar | Redes 100 % Cisco                |
+
+En la práctica casi siempre se elige **LACP**: al ser el estándar, funciona en
+cualquier red —con equipos de una sola marca o de varias— y hace el canal
+portable a futuro sin necesidad de usar equipos Cisco. PAgP solo tiene sentido
+cuando se quiere el equivalente de LACP pero en una red formada únicamente por
+dispositivos Cisco.
+
+> Los dos protocolos son excluyentes: un canal se negocia con **uno solo** de
+> los dos. No se pueden mezclar LACP y PAgP en los extremos del mismo
+> Port-channel.
+
 ## Configurarlo con LACP
 
 En **SW1**, se agrupan los 4 puertos y se levanta el canal:
@@ -83,6 +119,41 @@ SW2(config-if)# exit
 Un punto clave: la configuración de VLAN y trunk se aplica en
 `interface Port-channel 1`, **no** en cada puerto físico. Las interfaces
 físicas heredan automáticamente esa configuración en cuanto entran al canal.
+
+### Cambio de comandos según el protocolo
+
+La configuración es **exactamente la misma**, salvo la palabra del modo en el
+`channel-group`. Con **PAgP** solo cambias `active`/`passive` por
+`desirable`/`auto`:
+
+```ios
+SW1(config)# interface range GigabitEthernet 0/1 - 4
+SW1(config-if-range)# channel-group 1 mode desirable
+SW1(config-if-range)# exit
+
+SW2(config)# interface range GigabitEthernet 0/1 - 4
+SW2(config-if-range)# channel-group 1 mode auto
+SW2(config-if-range)# exit
+```
+
+Toda la parte de `interface Port-channel 1` (modo trunk, VLANs) es idéntica a
+la de LACP; lo único que distingue un protocolo de otro es el **modo** con el
+que se negocia el canal:
+
+| Protocolo | Quién inicia      | Quién espera       |
+| :-------- | :---------------- | :----------------- |
+| LACP      | `mode active`     | `mode passive`     |
+| PAgP      | `mode desirable`  | `mode auto`        |
+| Sin negociar | `mode on` (ambos extremos) | `mode on` (ambos extremos) |
+
+En `show etherchannel summary`, la columna **Protocol** te dice con cuál se
+formó el canal (`LACP` o `PAgP`); si se configuró con `mode on`, aparece como
+`-`.
+
+> Cambiar el protocolo NO implica tocar el Port-channel ni las VLANs: basta con
+> cambiar el `mode` del `channel-group` en los puertos y los dos extremos deben
+> ponerse de acuerdo en el mismo protocolo (mismo modo de inicio o
+> inicio–espera). `active` con `desirable` no negocian juntos.
 
 Se verifica con:
 

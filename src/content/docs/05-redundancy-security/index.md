@@ -32,6 +32,13 @@ de enrutamiento.
 
 - [Métricas y Distancia Administrativa](./metrics-administrative-distance)
 
+### OSPF avanzado (multi-área y punto a punto)
+
+Diseños que escalan la red OSPF más allá del laboratorio: full-mesh punto a
+punto sin DR/BDR y áreas con ABR resumiendo rutas.
+
+- [OSPF avanzado](./ospf-avanzado)
+
 ### First Hop Redundancy (FHRP / HSRP)
 
 Proporciona un gateway por defecto redundante para los hosts, con HSRP, VRRP o
@@ -54,6 +61,7 @@ protección de puertos no utilizados.
 | EtherChannel      | Agregación de enlaces (LACP / PAgP)                |
 | Distancia administrativa | Prioridad entre fuentes de enrutamiento     |
 | HSRP              | IP virtual compartida para alta disponibilidad     |
+| OSPF multi-área   | ABR resume entre áreas con LSA tipo 3 (`O IA`)    |
 | Port Security     | Restringe el acceso por MAC al puerto              |
 | DHCP Snooping     | Bloquea servidores DHCP falsos                     |
 
@@ -66,5 +74,5 @@ protección de puertos no utilizados.
 Aplica todo lo anterior a la misma red del módulo anterior con el
 [Ejercicio: Redundancia y seguridad (parte 3)](./exercise).
 
-Continúa con [el Módulo 5](../05-wireless-networks/) cuando la red sea
+Continúa con [el Módulo 6](../06-wireless-networks/) cuando la red sea
 redundante y segura.

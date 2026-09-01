@@ -117,7 +117,7 @@ R1(config-if)# no shutdown
 
 Con la interfaz WAN arriba, todo el tráfico sin destino local se envía al
 gateway del ISP con una **ruta por defecto** (detalle en
-[Rutas Estáticas y Default](../03-network-configuration/static-default-routes)):
+[Rutas Estáticas y Default](../04-routing-protocols/static-default-routes)):
 
 ```ios
 R1(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.2

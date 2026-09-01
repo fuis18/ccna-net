@@ -21,7 +21,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../05-wireless-networks/exercise):
+- Red completa del [ejercicio anterior](../06-wireless-networks/exercise):
   VLANs 10/20/30/99, routing, redundancia, seguridad y WLANs.
 - Los switches tienen las **IPs de gestión excluidas** del pool DHCP.
 

@@ -177,5 +177,5 @@ SW1# show ip arp inspection vlan 10
 - Guarda la configuración de todos los equipos:
   `copy running-config startup-config`.
 
-En el [Módulo 5](../05-wireless-networks/) añadirás el acceso **inalámbrico**
+En el [Módulo 6](../06-wireless-networks/) añadirás el acceso **inalámbrico**
 (WLAN) a la misma red.

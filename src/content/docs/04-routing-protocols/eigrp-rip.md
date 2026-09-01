@@ -3,8 +3,7 @@ title: EIGRP y RIP
 description: "EIGRP y RIP: métrica compuesta con DUAL y métrica por saltos, configuración, verificación y comparativa final con OSPF."
 ---
 
-**OSPF** tiene su propio documento — [OSPF](./ospf) — porque es el protocolo
-con más detalle del CCNA. Aquí van los otros dos: **EIGRP** (híbrido de Cisco)
+Estos son los otros dos protocolos de enrutamiendo: **EIGRP** (híbrido de Cisco)
 y **RIP** (vector de distancia clásico), más simples que OSPF pero con sus
 propios detalles de métrica y configuración.
 
@@ -121,7 +120,7 @@ R       10.0.0.0/8 [120/1] via 192.168.1.2, 00:00:09, GigabitEthernet0/1
 | RIP       | Vector de distancia | Saltos (hops)        | 120 | Lenta        | `router rip` + `version 2`  |
 
 Recordatorio de la selección de ruta: **prefijo más largo → menor AD → menor
-métrica** (ver [Métricas y Distancia Administrativa](../04-redundancy-security/metrics-administrative-distance)).
+métrica** (ver [Métricas y Distancia Administrativa](../05-redundancy-security/metrics-administrative-distance)).
 
 ## Preguntas tipo CCNA
 

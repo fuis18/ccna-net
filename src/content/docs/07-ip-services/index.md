@@ -57,5 +57,5 @@ puerto.
 Cierra el edificio con los servicios IP usando el
 [Ejercicio: Servicios IP (Parte 5)](./exercise).
 
-Este es el último módulo de la guía. Si dominas todos los temas y completas los
-ejercicios, ya tienes una base sólida para los objetivos del examen CCNA.
+Continúa con el [Módulo 8: QoS & Network Design](../08-qos-network-design/)
+cuando domines estos temas.

@@ -1,13 +1,14 @@
 ---
-title: Configuración de Red (Switching & Routing)
-description: "Configuración de una red LAN: VLANs y trunking, direccionamiento IP en switch y router, subinterfaces, rutas estáticas y protocolos de enrutamiento dinámico."
+title: Configuración de Red (Switching & Direccionamiento)
+description: "Configuración de una red LAN en el switch y el router: VLANs y trunking, direccionamiento IP y subinterfaces para enrutar entre VLANs."
 ---
 
-Este módulo sigue el flujo de configuración de una red de un edificio de un
-piso, de principio a fin: primero se segmenta con VLANs, luego se da
-direccionamiento IP a los dispositivos, se enruta entre VLANs con subinterfaces
-y por último se conectan las redes con rutas estáticas y protocolos de
-enrutamiento dinámico (OSPF, EIGRP y RIP).
+Este módulo sigue el flujo de configuración de la capa 2 y el direccionamiento de
+una red de un edificio de un piso: se segmenta con VLANs, se da direccionamiento
+IP a los dispositivos y se enruta entre VLANs con subinterfaces
+(router-on-a-stick). La conexión con otras redes mediante rutas estáticas y
+protocolos de enrutamiento (OSPF, EIGRP y RIP) se cubre en el
+[Módulo 4: Protocolos de Enrutamiento](../04-routing-protocols/).
 
 ## Temas del módulo
 
@@ -32,38 +33,14 @@ lógicas con etiquetado 802.1Q.
 
 - [Subinterfaces (Router-on-a-Stick)](./subinterfaces)
 
-### Rutas Estáticas y Default
-
-Define rutas de forma manual y la ruta por defecto que captura el tráfico sin
-destino específico en la tabla de enrutamiento.
-
-- [Rutas Estáticas y Default](./static-default-routes)
-
-### OSPF
-
-Estado de enlace con SPF/Dijkstra: áreas y backbone, métrica de coste,
-determinación del Router ID y elección de DR/BDR.
-
-- [OSPF (Open Shortest Path First)](./ospf)
-
-### EIGRP y RIP
-
-Vector de distancia: la métrica compuesta de EIGRP con respaldo DUAL y los
-saltos de RIP, con comparativa final entre los tres protocolos.
-
-- [EIGRP y RIP](./eigrp-rip)
-
 ## Repaso rápido
 
-| Concepto           | Resumen                                         |
-| :----------------- | :---------------------------------------------- |
-| VLAN               | Segmentación lógica del dominio de broadcast    |
-| Trunk (802.1Q)     | Etiqueta tramas para transportar varias VLANs   |
-| SVI                | IP de gestión del switch y gateway en multicapa |
-| Subinterfaz        | Interfaz lógica por VLAN en el router (802.1Q)  |
-| Ruta estática      | Ruta configurada manualmente                    |
-| Ruta default       | Ruta `0.0.0.0/0` para tráfico sin coincidencia  |
-| OSPF / EIGRP / RIP | Protocolos dinámicos (AD 110 / 90 / 120)        |
+| Concepto        | Resumen                                       |
+| :-------------- | :-------------------------------------------- |
+| VLAN            | Segmentación lógica del dominio de broadcast  |
+| Trunk (802.1Q)  | Etiqueta tramas para transportar varias VLANs |
+| SVI             | IP de gestión del switch y gateway en multicapa |
+| Subinterfaz     | Interfaz lógica por VLAN en el router (802.1Q) |
 
 ## Referencia rápida
 
@@ -71,8 +48,9 @@ saltos de RIP, con comparativa final entre los tres protocolos.
 
 ## Ejercicio
 
-Ponlo todo en práctica con el [Ejercicio: Red de un piso (parte 2)](./exercise),
-que retoma la configuración del módulo anterior y deja la red funcional de
+Ponlo todo en práctica con el [Ejercicio: Red de un piso](./exercise), que retoma
+la configuración del módulo anterior y deja la red enrutando entre VLANs de
 extremo a extremo.
 
-Continúa con [el Módulo 4](../04-redundancy-security/) cuando la red funcione.
+Continúa con [el Módulo 4: Protocolos de Enrutamiento](../04-routing-protocols/)
+para conectar esta red con otras mediante rutas estáticas y protocolos dinámicos.

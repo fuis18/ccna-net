@@ -1,6 +1,6 @@
 ---
 title: Cheat Sheet (Referencia Técnica)
-description: "Referencia técnica de Configuración de Red: VLANs y trunks, direccionamiento, subinterfaces, rutas estáticas y protocolos OSPF/EIGRP/RIP."
+description: "Referencia técnica de Configuración de Red: VLANs y trunks, direccionamiento de switch y router, y subinterfaces (router-on-a-stick)."
 ---
 
 ## Tipos de VLAN
@@ -51,6 +51,22 @@ interface GigabitEthernet0/3
 ## Direccionamiento del switch (SVI)
 
 ```ios
+interface vlan 1
+# ip add sw mask
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+exit
+
+# Switch capa 2 (sin ip routing): gateway obligatorio
+ip default-gateway 192.168.99.2
+
+# Switch multicapa: habilita enrutar entre VLANs
+ip routing
+
+do copy running-config startup-config
+```
+
+```ios
 interface vlan 10
 # ip add sw mask
 ip address 192.168.10.1 255.255.255.0
@@ -66,18 +82,20 @@ ip default-gateway 192.168.99.2
 
 # Switch multicapa: habilita enrutar entre VLANs
 ip routing
+
+do copy running-config startup-config
 ```
 
 ## Direccionamiento del router (interfaz física)
 
 ```ios
-interface f0/1
+int g0/1
 # ip add gw mask
 ip address 192.168.10.1 255.255.255.0
 no shutdown
 
-interface g0/1
-ip address 192.168.20.1 255.255.255.0
+int s0/0/0
+ip address 192.168.20.1 255.255.255.252
 no shutdown
 ```
 
@@ -110,130 +128,12 @@ Del lado del switch, hacia el router: puerto **trunk** con las VLANs permitidas.
 show vlan brief
 show interfaces trunk
 show ip interface brief
-show vlans          # en el router: qué subinterfaz atiende cada VLAN
+# router
+show vlans
 ```
 
-## Rutas en la tabla
+## Referencias del siguiente módulo
 
-| Origen    | Código          | Cómo se aprende |
-| :-------- | :-------------- | :-------------- |
-| Conectada | `C` (local `L`) | Interfaz con IP |
-| Estática  | `S`             | `ip route`      |
-| Dinámica  | `O`/`D`/`R`     | Protocolo       |
-
-## Rutas estáticas
-
-```ios
-# Ethernet
-R1(config)# ip route 10.0.0.0 255.0.0.0 192.168.2.2
-
-# Punto a punto
-R1(config)# ip route 10.0.0.0 255.0.0.0 Serial0/0/0
-
-# Ruta por defecto
-ip route 0.0.0.0 0.0.0.0 192.168.1.254
-
-# Ruta flotante (respaldo)
-ip route 10.0.0.0 255.0.0.0 192.168.2.2 150
-
-# IPv6
-ipv6 route 2001:db8:10::/64 2001:db8:1::2
-ipv6 route ::/0 2001:db8:1::254
-```
-
-## Distancia Administrativa (AD)
-
-| Fuente            | AD  |
-| :---------------- | :-- |
-| Conectada         | 0   |
-| Estática          | 1   |
-| EIGRP             | 90  |
-| OSPF              | 110 |
-| RIP               | 120 |
-| Flotante (manual) | 150 |
-| iBGP              | 200 |
-
-Selección de ruta: **prefijo más largo → menor AD → menor métrica**.
-
-## OSPFv2
-
-```ios
-router ospf 1
-router-id 1.1.1.1
-network 192.168.1.0 0.0.0.255 area 0
-passive-interface default
-no passive-interface g0/1
-exit
-
-interface g0/1
-ip ospf 1 area 0
-
-interface g0/2
-ip ospf 1 area 1
-```
-
-| Dato            | Valor                                                |
-| :-------------- | :--------------------------------------------------- |
-| Hello / Dead    | 10 s / 40 s                                          |
-| Métrica         | Coste = 100 000 / ancho de banda                     |
-| Multicast hello | 224.0.0.5                                            |
-| Router ID       | `router-id` > loopback más alta > IP física más alta |
-
-Estados vecinos: Down → Init → 2-Way → ExStart → Exchange → Loading → **Full**.
-
-### Tipos de LSA
-
-| LSA | Tipo     | Anuncia                    |
-| :-- | :------- | :------------------------- |
-| 1   | Router   | Redes del propio router    |
-| 2   | Network  | Red multiacceso (DR)       |
-| 3   | Summary  | Redes de otras áreas (ABR) |
-| 4   | ASBR     | Ubicación del ASBR         |
-| 5   | External | Rutas externas             |
-
-## EIGRP
-
-```ios
-router eigrp 100
- network 192.168.1.0 0.0.0.255
- no auto-summary
-```
-
-- AD **90**. Métrica = (10⁷ / banda mínima + retardo total) × 256.
-- Código en la tabla: `D`. Vecinos: `show ip eigrp neighbors`.
-
-## RIP
-
-```ios
-router rip
- version 2
- network 192.168.1.0
- no auto-summary
-```
-
-- AD **120**. Métrica = **saltos** (máx. 15; 16 = inalcanzable).
-- Código en la tabla: `R`. Actualiza cada 30 s.
-
-## Comparativa de protocolos
-
-| Protocolo | Tipo                | Métrica              | AD  |
-| :-------- | :------------------ | :------------------- | :-- |
-| OSPF      | Estado de enlace    | Coste (banda)        | 110 |
-| EIGRP     | Híbrido (DUAL)      | Banda + retardo ×256 | 90  |
-| RIP       | Vector de distancia | Saltos               | 120 |
-
-## Verificación routing
-
-```ios
-show ip route
-show ip route static
-show ip protocols
-
-show ip route ospf
-show ip ospf neighbor
-
-show ip route eigrp
-show ip eigrp neighbors
-
-show ip route rip
-```
+La **tabla de enrutamiento** (rutas conectadas, estáticas, OSPF, EIGRP y RIP),
+las rutas estáticas y la distancia administrativa se cubren en
+[Protocolos de Enrutamiento](../04-routing-protocols/), Módulo 4.

@@ -1,6 +1,6 @@
 # CCNA (Routers & Switches)
 
-CCNA study guide organized into 6 modules: network fundamentals, device management, network configuration, redundancy & security, wireless networks, and IP services. Each module (2–6) ends with an incremental exercise that builds a single-floor building network from scratch.
+CCNA study guide organized into 11 modules: network fundamentals, device management, network configuration, routing protocols, redundancy & security, wireless networks, IP services, QoS & design, management & troubleshooting, virtualization and automation. Each module (2–11) ends with an incremental exercise that builds a single-floor building network from scratch.
 Built with [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/).
 
 ## Project Structure
@@ -33,10 +33,15 @@ src/content/docs/
 ├── index.md                       # Landing page
 ├── 01-network-fundamentals/       # 1. Network Fundamentals
 ├── 02-device-management/          # 2. Device Management
-├── 03-network-configuration/      # 3. Configuración de Red (Switching & Routing)
-├── 04-redundancy-security/        # 4. Redundancy and Security
-├── 05-wireless-networks/          # 5. Wireless Networks (WLAN)
-├── 06-ip-services/                # 6. IP Services and Maintenance
+├── 03-network-configuration/      # 3. Configuración de Red (Switching & Direccionamiento)
+├── 04-routing-protocols/          # 4. Protocolos de Enrutamiento
+├── 05-redundancy-security/        # 5. Redundancy and Security
+├── 06-wireless-networks/          # 6. Wireless Networks (WLAN)
+├── 07-ip-services/                # 7. IP Services and Maintenance
+├── 08-qos-network-design/         # 8. QoS & Network Design
+├── 09-management-troubleshooting/ # 9. Management & Troubleshooting
+├── 10-network-virtualization/     # 10. Network Virtualization
+└── 11-network-automation/         # 11. Network Automation
 ```
 
 ## Commands

@@ -45,4 +45,4 @@ empresarial (802.1X).
 Añade el acceso inalámbrico al edificio con el
 [Ejercicio: Red Inalámbrica (Parte 4)](./exercise).
 
-Continúa con [el Módulo 6](../06-ip-services/) cuando domines las WLAN.
+Continúa con [el Módulo 7](../07-ip-services/) cuando domines las WLAN.
