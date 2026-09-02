@@ -20,6 +20,7 @@ misma fuente (métrica). Este tema explica ambos conceptos.
 S       10.0.0.0/8 [1/0] via 192.168.1.2
 O       10.0.0.0/8 [110/2] via 192.168.1.3
 ```
+
 En el ejemplo, la ruta **estática** (`S`, AD 1) gana a la **OSPF** (`O`, AD 110),
 aunque el coste OSPF sea menor, porque la AD se evalúa primero.
 
@@ -28,16 +29,16 @@ aunque el coste OSPF sea menor, porque la AD se evalúa primero.
 La **AD** es un valor de fiabilidad de la **fuente** de la ruta: cuanto más
 baja, más confiable.
 
-| Fuente de ruta                  | AD por defecto |
-| :------------------------------ | :------------- |
-| Conectada (directa)             | 0              |
-| Estática                        | 1              |
+| Fuente de ruta                  | AD por defecto    |
+| :------------------------------ | :---------------- |
+| Conectada (directa)             | 0                 |
+| Estática                        | 1                 |
+| eBGP                            | 20                |
+| EIGRP                           | 90                |
+| OSPF                            | 110               |
+| RIP                             | 120               |
 | Ruta estática flotante (manual) | 150 (configurada) |
-| eBGP                            | 20             |
-| EIGRP                           | 90             |
-| OSPF                            | 110            |
-| RIP                             | 120            |
-| iBGP                            | 200            |
+| iBGP                            | 200               |
 
 > Valor clave para el examen: **conectada 0, estática 1, eBGP 20, EIGRP 90,
 > OSPF 110, RIP 120, iBGP 200**.
@@ -56,12 +57,12 @@ R1(config)# ip route 10.0.0.0 255.0.0.0 192.168.2.2 150
 La **métrica** compara rutas **dentro del mismo protocolo**. Cada protocolo usa
 la suya:
 
-| Protocolo | Métrica                          | Menor valor = mejor |
-| :---------| :------------------------------- | :------------------ |
-| OSPF      | **Coste** (banda de referencia / ancho de banda) | Sí |
-| EIGRP     | **Métrica compuesta** (banda + retardo, por defecto) | Sí |
-| RIP       | **Número de saltos** (hops)      | Sí                 |
-| Estática  | 0                                | —                   |
+| Protocolo | Métrica                                              | Menor valor = mejor |
+| :-------- | :--------------------------------------------------- | :------------------ |
+| OSPF      | **Coste** (banda de referencia / ancho de banda)     | Sí                  |
+| EIGRP     | **Métrica compuesta** (banda + retardo, por defecto) | Sí                  |
+| RIP       | **Número de saltos** (hops)                          | Sí                  |
+| Estática  | 0                                                    | —                   |
 
 ## Metricas de OSPF y EIGRP en detalle
 
@@ -71,11 +72,11 @@ $$
 \text{coste} = \frac{100\,000 \text{ Kbps}}{\text{ancho de banda del enlace}}
 $$
 
-| Enlace | Coste |
-| :----- | :---- |
-| 10 Mbps | 100  |
-| 100 Mbps | 10 |
-| 1 Gbps  | 1    |
+| Enlace   | Coste |
+| :------- | :---- |
+| 10 Mbps  | 100   |
+| 100 Mbps | 10    |
+| 1 Gbps   | 1     |
 
 ### EIGRP: métrica compuesta
 
@@ -96,6 +97,7 @@ R1(config)# ip route 10.0.0.0 255.0.0.0 192.168.1.2 200   # AD personalizada
 R1(config)# router ospf 1
 R1(config-router)# auto-cost reference-bandwidth 10000     # referencia para enlaces ≥1 Gbps
 ```
+
 ## Verificación
 
 ```R1# show ip route

@@ -1,9 +1,9 @@
 ---
 title: "Ejercicio: Servicios IP"
-description: "Ejercicio incremental 5: conexión al ISP (enlace WAN), DHCP, NAT/PAT, NTP y ACLs para dejar el edificio con servicios IP completos."
+description: "Ejercicio incremental 6: conexión al ISP (enlace WAN), DHCP, NAT/PAT, NTP y ACLs para dejar el edificio con servicios IP completos."
 ---
 
-Última parte de la serie. La red del edificio ya es funcional, redundante,
+Sexta parte de la serie. La red del edificio ya es funcional, redundante,
 segura e inalámbrica. Ahora le añades los **servicios IP** que la dejan
 operativa de forma autónoma: la **conexión al ISP** (enlace WAN y ruta por
 defecto), **DHCP** para asignar direcciones, **NAT/PAT** para salir a internet
@@ -21,7 +21,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../06-wireless-networks/exercise):
+- Red completa del [ejercicio anterior](../07-wireless-networks/exercise):
   VLANs 10/20/30/99, routing, redundancia, seguridad y WLANs.
 - Los switches tienen las **IPs de gestión excluidas** del pool DHCP.
 

@@ -275,5 +275,7 @@ EIGRP no falte la métrica en el `redistribute ospf`.
 - Guarda la configuración de los seis equipos:
   `copy running-config startup-config`.
 
-En el [Módulo 5](../05-redundancy-security/) harás esta misma red **redundante
-y segura**: STP, EtherChannel, HSRP y seguridad de capa 2.
+En el [Módulo 5](../05-switching-security/) harás esta misma red **redundante
+en la capa de conmutación** (STP y EtherChannel) y **segura** (seguridad de
+capa 2), y en el [Módulo 6](../06-routing-redundancy/) añadirás un **gateway
+redundante** con HSRP.

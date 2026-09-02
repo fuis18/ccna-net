@@ -55,7 +55,7 @@ puerto.
 ## Ejercicio
 
 Cierra el edificio con los servicios IP usando el
-[Ejercicio: Servicios IP (Parte 5)](./exercise).
+[Ejercicio: Servicios IP (Parte 6)](./exercise).
 
-Continúa con el [Módulo 8: QoS & Network Design](../08-qos-network-design/)
+Continúa con el [Módulo 9: QoS & Network Design](../09-qos-network-design/)
 cuando domines estos temas.

@@ -56,4 +56,4 @@ direccionamiento, gestión de cambios y baselines operacionales.
 ## Ejercicio
 
 Aplica QoS y documentación a la red del edificio con el
-[Ejercicio: QoS y Diseño de Red (Parte 6)](./exercise).
+[Ejercicio: QoS y Diseño de Red (Parte 7)](./exercise).

@@ -46,4 +46,4 @@ resolver problemas.
 ## Ejercicio
 
 Monitorea y diagnostica problemas en la red del edificio con el
-[Ejercicio: Gestión y Diagnóstico (Parte 7)](./exercise).
+[Ejercicio: Gestión y Diagnóstico (Parte 8)](./exercise).

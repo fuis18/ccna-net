@@ -23,7 +23,7 @@ destino específico en la tabla de enrutamiento.
 Estado de enlace: LSA/LSDB, métrica de coste, determinación del Router ID,
 elección de DR/BDR y configuración de un área única. Los diseños avanzados
 (full-mesh punto a punto y multi-área) continúan en
-[OSPF avanzado](../05-redundancy-security/ospf-avanzado), Módulo 5.
+[OSPF avanzado](../06-routing-redundancy/ospf-avanzado), Módulo 6.
 
 - [OSPF (Open Shortest Path First)](./ospf)
 
@@ -61,5 +61,5 @@ dominio y EIGRP en el otro, con el
 [Ejercicio: Routing entre Redes](./exercise), que termina en la
 **redistribución** de rutas entre ambos protocolos en R2.
 
-Continúa con [el Módulo 5: Redundancia y Seguridad](../05-redundancy-security/)
+Continúa con [el Módulo 5: Switching y Seguridad](../05-switching-security/)
 cuando la red enrute entre redes.

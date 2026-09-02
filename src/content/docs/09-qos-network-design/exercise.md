@@ -1,9 +1,9 @@
 ---
 title: "Ejercicio: QoS y Diseño de Red"
-description: "Ejercicio incremental 6: implementar QoS, descubrimiento de vecinos y documentación completa de la red del edificio."
+description: "Ejercicio incremental 7: implementar QoS, descubrimiento de vecinos y documentación completa de la red del edificio."
 ---
 
-Sexta parte de la serie. La red del edificio es funcional, redundante, segura,
+Séptima parte de la serie. La red del edificio es funcional, redundante, segura,
 inalámbrica y tiene servicios IP. Ahora le das **calidad de servicio** al
 tráfico y **documentas** toda la infraestructura. Al terminar, la voz y el
 video funcionan correctamente incluso bajo carga, y tienes un registro completo
@@ -25,7 +25,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../07-ip-services/exercise):
+- Red completa del [ejercicio anterior](../08-ip-services/exercise):
   VLANs, routing, redundancia, seguridad, WLANs y servicios IP (DHCP, NAT,
   ACLs, NTP).
 - R1 ya tiene configuración de NAT, DHCP y ACLs.
@@ -45,8 +45,8 @@ Prioriza el tráfico VoIP (DSCP EF) con cola estricta y garantiza ancho de
 banda para datos.
 
 La teoría completa está en
-[Algoritmos de Encolamiento](../08-qos-network-design/queuing-algorithms) y
-[Calidad de Transmisión](../08-qos-network-design/network-transmission-quality).
+[Algoritmos de Encolamiento](../09-qos-network-design/queuing-algorithms) y
+[Calidad de Transmisión](../09-qos-network-design/network-transmission-quality).
 
 ```ios
 R1(config)# class-map match-any VOZ

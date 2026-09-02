@@ -1,9 +1,9 @@
 ---
 title: "Ejercicio: Automatización de Red"
-description: "Ejercicio incremental 9: automatizar la configuración con Ansible y explorar Cisco DNA Center para gestionar la red del edificio."
+description: "Ejercicio incremental 10: automatizar la configuración con Ansible y explorar Cisco DNA Center para gestionar la red del edificio."
 ---
 
-Novena y última parte de la serie. La red del edificio es completa: funcional,
+Décima y última parte de la serie. La red del edificio es completa: funcional,
 redundante, segura, inalámbrica, con servicios IP, QoS, monitoreo y
 virtualización. Ahora la **automatizas** con Ansible para ejecutar cambios
 a escala y exploras **Cisco DNA Center** como plataforma de gestión.
@@ -24,7 +24,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../10-network-virtualization/exercise).
+- Red completa del [ejercicio anterior](../11-network-virtualization/exercise).
 - Ansible instalado en una estación de trabajo Linux.
 - Acceso a Cisco DNA Center (puede ser sandbox de Cisco DevNet).
 

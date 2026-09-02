@@ -186,5 +186,7 @@ La teoría de traducir rutas entre protocolos está en
 [Redistribución entre protocolos](./redistribution). Las **VLANs,
 direccionamiento y subinterfaces** sobre las que se enrutan estas
 rutas se describen en [Configuración de Red](../03-network-configuration/),
-Módulo 3. La **redundancia y OSPF avanzado** (multi-área y punto a punto)
-continúan en [Redundancia y Seguridad](../05-redundancy-security/), Módulo 5.
+Módulo 3. La **redundancia del plano de conmutación** continúa en
+[Switching y Seguridad](../05-switching-security/), Módulo 5, y la **selección
+de ruta y OSPF avanzado** (multi-área y punto a punto) en
+[Routing y Redundancia](../06-routing-redundancy/), Módulo 6.

@@ -45,4 +45,4 @@ futuro de la red programable.
 ## Ejercicio
 
 Implementa VRF y un túnel GRE en la red del edificio con el
-[Ejercicio: Virtualización de Red (Parte 8)](./exercise).
+[Ejercicio: Virtualización de Red (Parte 9)](./exercise).

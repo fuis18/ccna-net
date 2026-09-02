@@ -120,7 +120,7 @@ R       10.0.0.0/8 [120/1] via 192.168.1.2, 00:00:09, GigabitEthernet0/1
 | RIP       | Vector de distancia | Saltos (hops)        | 120 | Lenta        | `router rip` + `version 2`  |
 
 Recordatorio de la selección de ruta: **prefijo más largo → menor AD → menor
-métrica** (ver [Métricas y Distancia Administrativa](../05-redundancy-security/metrics-administrative-distance)).
+métrica** (ver [Métricas y Distancia Administrativa](../06-routing-redundancy/metrics-administrative-distance)).
 
 Cuando OSPF y EIGRP conviven en la misma red, las rutas se traducen entre ellos
 con [Redistribución](./redistribution).

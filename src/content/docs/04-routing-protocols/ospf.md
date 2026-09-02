@@ -267,4 +267,4 @@ R1 llega a `FULL` con el BDR y se queda en `2WAY` con los DROTHER — el comport
 - **OSPF** (estado de enlace): topología completa en la **LSDB** (armada con **LSAs**) y rutas calculadas con **SPF/Dijkstra**.
 - Cada router mantiene tres bases de datos: la **Adjacency Database** (`show ip ospf neighbor`), la **Link-State Database** (`show ip ospf database`) y la **Forwarding Database** (`show ip route ospf`).
 - **Área única**: ya hace falta resolver coste, Router ID y — en segmentos multiacceso — la elección de **DR/BDR**, que reduce las adyacencias de $n(n-1)/2$ a $2n-3$.
-- Los diseños avanzados — **full-mesh punto a punto** (sin DR/BDR, sin switches) y **multi-área con ABR** — están en [OSPF avanzado](../05-redundancy-security/ospf-avanzado).
+- Los diseños avanzados — **full-mesh punto a punto** (sin DR/BDR, sin switches) y **multi-área con ABR** — están en [OSPF avanzado](../06-routing-redundancy/ospf-avanzado).

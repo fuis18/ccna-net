@@ -1,9 +1,9 @@
 ---
 title: "Ejercicio: Gestión y Diagnóstico de Red"
-description: "Ejercicio incremental 7: habilitar SNMP, Syslog, CDP/LLDP y resolver problemas de conectividad en la red del edificio."
+description: "Ejercicio incremental 8: habilitar SNMP, Syslog, CDP/LLDP y resolver problemas de conectividad en la red del edificio."
 ---
 
-Séptima parte de la serie. La red del edificio tiene QoS y documentación. Ahora
+Octava parte de la serie. La red del edificio tiene QoS y documentación. Ahora
 configuras **monitoreo proactivo** con SNMP y Syslog, y practicas el
 **troubleshooting metódico** resolviendo problemas inyectados en la red.
 
@@ -21,7 +21,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../08-qos-network-design/exercise):
+- Red completa del [ejercicio anterior](../09-qos-network-design/exercise):
   VLANs, routing, redundancia, seguridad, WLANs, servicios IP y QoS.
 - Un servidor con IP 10.0.0.100 (NMS) y otro con IP 10.0.0.200 (Syslog).
 

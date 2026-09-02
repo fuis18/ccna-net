@@ -1,6 +1,6 @@
 # CCNA (Routers & Switches)
 
-CCNA study guide organized into 11 modules: network fundamentals, device management, network configuration, routing protocols, redundancy & security, wireless networks, IP services, QoS & design, management & troubleshooting, virtualization and automation. Each module (2–11) ends with an incremental exercise that builds a single-floor building network from scratch.
+CCNA study guide organized into 12 modules: network fundamentals, device management, network configuration, routing protocols, switching security, routing redundancy, wireless networks, IP services, QoS & design, management & troubleshooting, virtualization and automation. Each module (2–12) ends with an incremental exercise that builds a single-floor building network from scratch.
 Built with [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/).
 
 ## Project Structure
@@ -35,13 +35,14 @@ src/content/docs/
 ├── 02-device-management/          # 2. Device Management
 ├── 03-network-configuration/      # 3. Configuración de Red (Switching & Direccionamiento)
 ├── 04-routing-protocols/          # 4. Protocolos de Enrutamiento
-├── 05-redundancy-security/        # 5. Redundancy and Security
-├── 06-wireless-networks/          # 6. Wireless Networks (WLAN)
-├── 07-ip-services/                # 7. IP Services and Maintenance
-├── 08-qos-network-design/         # 8. QoS & Network Design
-├── 09-management-troubleshooting/ # 9. Management & Troubleshooting
-├── 10-network-virtualization/     # 10. Network Virtualization
-└── 11-network-automation/         # 11. Network Automation
+├── 05-switching-security/        # 5. Switching y Seguridad
+├── 06-routing-redundancy/        # 6. Routing y Redundancia
+├── 07-wireless-networks/         # 7. Wireless Networks (WLAN)
+├── 08-ip-services/               # 8. IP Services and Maintenance
+├── 09-qos-network-design/        # 9. QoS & Network Design
+├── 10-management-troubleshooting/ # 10. Management & Troubleshooting
+├── 11-network-virtualization/    # 11. Network Virtualization
+└── 12-network-automation/        # 12. Network Automation
 ```
 
 ## Commands

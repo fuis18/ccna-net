@@ -55,4 +55,4 @@ Cisco DNA Center es la plataforma que implementa IBN para campus y branch.
 
 Automatiza la configuración de la red del edificio con Ansible y explora
 Cisco DNA Center con el
-[Ejercicio: Automatización de Red (Parte 9)](./exercise).
+[Ejercicio: Automatización de Red (Parte 10)](./exercise).

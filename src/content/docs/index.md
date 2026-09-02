@@ -12,9 +12,9 @@ hero:
 
 ## Cómo usar esta guía
 
-Esta guía está organizada en 11 módulos que cubren los temas esenciales de redes.
+Esta guía está organizada en 12 módulos que cubren los temas esenciales de redes.
 Se recomienda seguirlos en orden, aunque cada capítulo puede consultarse de forma independiente.
-Cada módulo (del 2 al 11) termina con un **ejercicio incremental** que retoma la
+Cada módulo (del 2 al 12) termina con un **ejercicio incremental** que retoma la
 configuración del anterior, hasta completar un edificio de un piso de principio
 a fin.
 
@@ -55,71 +55,78 @@ administrativa y protocolos de enrutamiento dinámico OSPF, EIGRP y RIP.
 - [OSPF (Open Shortest Path First)](04-routing-protocols/ospf)
 - [EIGRP y RIP](04-routing-protocols/eigrp-rip)
 
-### [5. Redundancia y Seguridad](05-redundancy-security/)
+### [5. Switching y Seguridad](05-switching-security/)
 
-Los temas que hacen que la red siga funcionando cuando algo falla o cuando
-alguien intenta entrar: Spanning Tree, EtherChannel, métricas y distancia
-administrativa, FHRP y seguridad de capa 2.
+Los temas que hacen que la **capa de conmutación** siga funcionando cuando algo
+falla o cuando alguien intenta entrar: Spanning Tree, EtherChannel y seguridad
+de capa 2.
 
-- [Spanning Tree Protocol (STP / RSTP)](05-redundancy-security/spanning-tree-protocol)
-- [EtherChannel (LACP / PAgP)](05-redundancy-security/etherchannel)
-- [Métricas y Distancia Administrativa](05-redundancy-security/metrics-administrative-distance)
-- [OSPF avanzado (multi-área y punto a punto)](05-redundancy-security/ospf-avanzado)
-- [First Hop Redundancy (FHRP / HSRP)](05-redundancy-security/fhrp-hsrp)
-- [Seguridad de Capa 2](05-redundancy-security/layer-2-security)
+- [Spanning Tree Protocol (STP / RSTP)](05-switching-security/spanning-tree-protocol)
+- [EtherChannel (LACP / PAgP)](05-switching-security/etherchannel)
+- [Seguridad de Capa 2](05-switching-security/layer-2-security)
 
-### [6. Wireless Networks (WLAN)](06-wireless-networks/)
+### [6. Routing y Redundancia](06-routing-redundancy/)
+
+Redundancia del plano de control y del gateway: selección de ruta (métricas y
+distancia administrativa), OSPF avanzado y protocolos FHRP (HSRP) para un
+gateway por defecto redundante.
+
+- [Métricas y Distancia Administrativa](06-routing-redundancy/metrics-administrative-distance)
+- [OSPF avanzado (multi-área y punto a punto)](06-routing-redundancy/ospf-avanzado)
+- [First Hop Redundancy (FHRP / HSRP)](06-routing-redundancy/fhrp-hsrp)
+
+### [7. Wireless Networks (WLAN)](07-wireless-networks/)
 
 Redes inalámbricas: arquitectura de puntos de acceso y controladores, configuración
 de WLANs y seguridad inalámbrica.
 
-- [Arquitectura de APs y WLC](06-wireless-networks/ap-wlc-architecture)
-- [Configuración de WLANs y SSIDs](06-wireless-networks/wlan-ssid-configuration)
-- [Seguridad Inalámbrica (WPA2 / WPA3)](06-wireless-networks/wireless-security)
+- [Arquitectura de APs y WLC](07-wireless-networks/ap-wlc-architecture)
+- [Configuración de WLANs y SSIDs](07-wireless-networks/wlan-ssid-configuration)
+- [Seguridad Inalámbrica (WPA2 / WPA3)](07-wireless-networks/wireless-security)
 
-### [7. IP Services and Maintenance](07-ip-services/)
+### [8. IP Services and Maintenance](08-ip-services/)
 
 Servicios IP y mantenimiento: NAT/PAT, DHCP/DNS/NTP y listas de control de acceso.
 
-- [NAT / PAT](07-ip-services/nat-pat)
-- [Conexión al ISP (Enlaces WAN)](07-ip-services/conexion-isp)
-- [DHCP / DNS / NTP](07-ip-services/dhcp-dns-ntp)
-- [Listas de Control de Acceso (ACLs)](07-ip-services/acls)
+- [NAT / PAT](08-ip-services/nat-pat)
+- [Conexión al ISP (Enlaces WAN)](08-ip-services/conexion-isp)
+- [DHCP / DNS / NTP](08-ip-services/dhcp-dns-ntp)
+- [Listas de Control de Acceso (ACLs)](08-ip-services/acls)
 
-### [8. QoS & Network Design](08-qos-network-design/)
+### [9. QoS & Network Design](09-qos-network-design/)
 
 Calidad de servicio y diseño de red jerárquico: algoritmos de encolamiento,
 métricas de transmisión, capas Core/Distribution/Access y documentación.
 
-- [Algoritmos de Encolamiento](08-qos-network-design/queuing-algorithms)
-- [Calidad de Transmisión en Red](08-qos-network-design/network-transmission-quality)
-- [Redes Jerárquicas y Escalables](08-qos-network-design/hierarchy-scalable-networks)
-- [Documentación de Red](08-qos-network-design/network-documentation)
+- [Algoritmos de Encolamiento](09-qos-network-design/queuing-algorithms)
+- [Calidad de Transmisión en Red](09-qos-network-design/network-transmission-quality)
+- [Redes Jerárquicas y Escalables](09-qos-network-design/hierarchy-scalable-networks)
+- [Documentación de Red](09-qos-network-design/network-documentation)
 
-### [9. Network Management & Troubleshooting](09-management-troubleshooting/)
+### [10. Network Management & Troubleshooting](10-management-troubleshooting/)
 
 Gestión y diagnóstico de red: CDP/LLDP, SNMP, Syslog y metodología de
 troubleshooting con herramientas Cisco.
 
-- [Descubrimiento de Dispositivos (CDP / LLDP)](09-management-troubleshooting/cdp-lldp)
-- [Monitoreo: SNMP y Syslog](09-management-troubleshooting/snmp-syslog)
-- [Metodología de Troubleshooting](09-management-troubleshooting/troubleshooting-process)
+- [Descubrimiento de Dispositivos (CDP / LLDP)](10-management-troubleshooting/cdp-lldp)
+- [Monitoreo: SNMP y Syslog](10-management-troubleshooting/snmp-syslog)
+- [Metodología de Troubleshooting](10-management-troubleshooting/troubleshooting-process)
 
-### [10. Network Virtualization](10-network-virtualization/)
+### [11. Network Virtualization](11-network-virtualization/)
 
 Virtualización de red: cloud computing, infraestructura virtual (VRF, GRE, VXLAN)
 y Software-Defined Networking (SDN).
 
-- [Cloud Computing](10-network-virtualization/cloud-computing)
-- [Infraestructura Virtual de Red](10-network-virtualization/virtual-network-infra)
-- [Software-Defined Networking (SDN)](10-network-virtualization/sdn)
+- [Cloud Computing](11-network-virtualization/cloud-computing)
+- [Infraestructura Virtual de Red](11-network-virtualization/virtual-network-infra)
+- [Software-Defined Networking (SDN)](11-network-virtualization/sdn)
 
-### [11. Network Automation](11-network-automation/)
+### [12. Network Automation](12-network-automation/)
 
 Automatización de red: APIs, formatos de datos, herramientas de configuración
 (Ansible, Terraform), IBN y Cisco DNA Center.
 
-- [Panorama de Automatización](11-network-automation/automation-overview)
-- [APIs y Formatos de Datos](11-network-automation/apis-data-frames)
-- [Herramientas de Gestión de Configuración](11-network-automation/config-management-tools)
-- [IBN y Cisco DNA Center](11-network-automation/ibn-dna-center)
+- [Panorama de Automatización](12-network-automation/automation-overview)
+- [APIs y Formatos de Datos](12-network-automation/apis-data-frames)
+- [Herramientas de Gestión de Configuración](12-network-automation/config-management-tools)
+- [IBN y Cisco DNA Center](12-network-automation/ibn-dna-center)

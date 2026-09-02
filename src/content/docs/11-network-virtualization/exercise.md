@@ -1,9 +1,9 @@
 ---
 title: "Ejercicio: Virtualización de Red"
-description: "Ejercicio incremental 8: configurar VRF para segmentar tráfico y un túnel GRE para conectar redes remotas en el edificio."
+description: "Ejercicio incremental 9: configurar VRF para segmentar tráfico y un túnel GRE para conectar redes remotas en el edificio."
 ---
 
-Octava parte de la serie. La red del edificio tiene monitoreo y troubleshooting.
+Novena parte de la serie. La red del edificio tiene monitoreo y troubleshooting.
 Ahora aplicas **virtualización de red** para segmentar el tráfico de Ventas e
 IT con **VRF**, y conectas una red remota con un **túnel GRE**.
 
@@ -23,7 +23,7 @@ graph LR
 
 ## Requisitos
 
-- Red completa del [ejercicio anterior](../09-management-troubleshooting/exercise).
+- Red completa del [ejercicio anterior](../10-management-troubleshooting/exercise).
 - Un segundo router (RREMOTE) con enlace hacia R1.
 
 ## Objetivos
