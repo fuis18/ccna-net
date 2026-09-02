@@ -133,8 +133,6 @@ Configurar fecha y hora correctas es importante para logs y certificados
 R1-Oficina# clock set 14:30:00 14 aug 2026
 ```
 
-> En producción se sincroniza con un servidor NTP (ver [Módulo 7](../07-ip-services/dhcp-dns-ntp)).
-
 ## Guardar la configuración
 
 Los cambios van al **running-config** (RAM) y se pierden al reiniciar. Para

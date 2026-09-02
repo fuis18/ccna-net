@@ -131,9 +131,3 @@ show ip interface brief
 # router
 show vlans
 ```
-
-## Referencias del siguiente módulo
-
-La **tabla de enrutamiento** (rutas conectadas, estáticas, OSPF, EIGRP y RIP),
-las rutas estáticas y la distancia administrativa se cubren en
-[Protocolos de Enrutamiento](../04-routing-protocols/), Módulo 4.

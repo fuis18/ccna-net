@@ -10,8 +10,6 @@ no funciona — genera un **bucle de capa 2**. El **Spanning Tree Protocol
 
 ## El problema: bucles de capa 2
 
-**Situación:** dos switches de un mismo piso se conectan con dos cables, para que si uno se desconecta el otro siga dando servicio.
-
 **Problema:** Una trama de broadcast que entra por SW1 sale por
 ambos enlaces hacia SW2. SW2 la reenvía de vuelta a SW1 por el enlace que le
 queda libre. SW1 la vuelve a reenviar. La trama nunca deja de circular:
@@ -150,28 +148,36 @@ el camino activo falla. Si eso pasa, STP recalcula y ese puerto puede pasar a
 reenviar tráfico.
 
 ```ios
-# Root primary
+! SW1 — root primary para VLAN 10, root secondary para VLAN 20
 SW1(config)# spanning-tree mode pvst
 SW1(config)# spanning-tree vlan 10 root primary
+SW1(config)# spanning-tree vlan 20 root secondary
 
-# Root secundary
+! SW2 — root secondary para VLAN 10, root primary para VLAN 20
 SW2(config)# spanning-tree mode pvst
 SW2(config)# spanning-tree vlan 10 root secondary
+SW2(config)# spanning-tree vlan 20 root primary
 
+! SW3 — no raíz de ninguna VLAN, solo ajusta el costo de un enlace
 SW3(config)# spanning-tree mode pvst
-
-SW4(config)# spanning-tree mode pvst
-SW4(config)# interface GigabitEthernet0/1
-SW4(config-if)# spanning-tree vlan 10 cost 4
+SW3(config)# interface GigabitEthernet0/1
+SW3(config-if)# spanning-tree vlan 10 cost 4
+SW3(config-if)# spanning-tree vlan 20 cost 4
 ```
 
-- Con `root primary` SW1 baja su prioridad a **24576** (o 4096 menos que la
-  raíz actual) y se convierte en el _Root SW_ de la gráfica;
-- `root secondary` prepara a SW2 como respaldo con prioridad **28672**.
-- Ajustando el `cost` en los enlaces de un switch no raíz se decide por qué
-  puerto se elige su **root port**. En el resto de la red, con todas las
-  prioridades por defecto, STP asigna los roles automáticamente: designated
-  en los segmentos y bloqueado en los enlaces redundantes.
+- Con `root primary` SW1 baja su prioridad de VLAN 10 a **24576** (4096 menos
+  que la raíz por defecto) y se convierte en el _Root SW_ de esa VLAN;
+  `root secondary` en VLAN 20 lo deja en **28672**, listo como respaldo.
+- SW2 hace el rol inverso: raíz de VLAN 20, respaldo de VLAN 10. Así cada
+  VLAN tiene un root distinto, y el balanceo de carga (ver más abajo) tiene
+  sentido: el tráfico de VLAN 10 sube por un switch y el de VLAN 20 por el
+  otro.
+- Ajustando el `cost` en los enlaces de SW3 se decide por qué puerto elige su
+  **root port** para cada VLAN — acá, con el mismo costo en ambas, el criterio
+  de desempate sigue siendo el que corresponda (puerto con menor ID, etc.).
+  En el resto de la red, con todas las prioridades por defecto, STP asigna
+  los demás roles automáticamente: designated en los segmentos y bloqueado en
+  los enlaces redundantes.
 
 ### Estados de puerto y por qué tarda tanto
 
@@ -233,20 +239,84 @@ activo para las VLANs de datos y el enlace 2 el activo para las VLANs de voz
 — ambos cables trabajan, en vez de que uno quede bloqueado todo el tiempo.
 
 ```ios
-# Root primary
 SW1(config)# spanning-tree mode rapid-pvst
-SW1(config)# spanning-tree vlan 10 root primary
-
-# Root secundary
-SW2(config)# spanning-tree mode rapid-pvst
-SW2(config)# spanning-tree vlan 10 root secondary
-
-SW3(config)# spanning-tree mode rapid-pvst
-
-SW4(config)# spanning-tree mode rapid-pvst
-SW4(config)# interface GigabitEthernet0/1
-SW4(config-if)# spanning-tree vlan 10 cost 4
 ```
+
+El único cambio real frente a PVST+ es la palabra `rapid-pvst` en el modo:
+la lógica de `root primary` / `root secondary` / `cost` es idéntica, porque
+Rapid PVST+ es PVST+ corriendo sobre el algoritmo de RSTP por debajo — cambia
+la velocidad de convergencia, no la forma de configurarlo.
+
+### MST: una instancia para varias VLANs
+
+**El problema que resuelve MST:** PVST+/Rapid PVST+ corren **una instancia
+de spanning tree por cada VLAN**. Eso es flexible, pero no escala: una red
+con 200 VLANs hace que cada switch mantenga 200 cálculos de árbol y 200
+tandas de BPDUs por trunk — carga de CPU y de tráfico de control que crece
+sin necesidad, porque en la práctica muchas VLANs terminan queriendo la
+misma topología.
+
+**MST (Multiple Spanning Tree, 802.1s)** cambia el enfoque: en vez de una
+instancia por VLAN, se definen unas pocas **instancias** (MSTI) y se
+**mapean varias VLANs a cada instancia**. Todas las VLANs de una misma
+instancia comparten un único cálculo de árbol, root bridge y roles de
+puerto.
+
+**La diferencia de configuración frente a PVST/Rapid-PVST** es el paso extra
+que exige MST: antes de tocar `root primary` o `cost`, hay que definir la
+**región MST** (nombre + número de revisión) y el **mapeo VLAN → instancia**
+— y esa configuración tiene que ser **idéntica en los tres switches**, porque
+si el nombre o la revisión de la región difieren, los switches se ven como
+regiones MST distintas y dejan de compartir una sola topología. PVST y
+Rapid-PVST no tienen este paso: cada switch calcula su rol por VLAN de forma
+independiente, sin necesidad de coordinar nada de antemano entre switches.
+
+```ios
+! Configuración de región — IDÉNTICA en SW1, SW2 y SW3
+SW1(config)# spanning-tree mode mst
+SW1(config)# spanning-tree mst configuration
+SW1(config-mst)# name REGION1
+SW1(config-mst)# revision 1
+SW1(config-mst)# instance 1 vlan 10,30
+SW1(config-mst)# instance 2 vlan 20
+SW1(config-mst)# exit
+
+! SW1 — root primary de la instancia 1 (VLAN 10 & 30)
+SW1(config)# spanning-tree mst 1 root primary
+
+! SW1 — root secondary de la instancia 2 (VLAN 20)
+SW1(config)# spanning-tree mst 2 root secondary
+```
+
+```ios
+SW2(config)# spanning-tree mst 1 root secondary
+SW2(config)# spanning-tree mst 2 root primary
+```
+
+```ios
+SW3(config)# interface GigabitEthernet0/1
+SW3(config-if)# spanning-tree mst 1 cost 4
+SW3(config-if)# spanning-tree mst 2 cost 4
+```
+
+**Lo que cambia y lo que no, comparado con PVST/Rapid-PVST:**
+
+| Aspecto                 | PVST+ / Rapid PVST+                        | MST                                                               |
+| :---------------------- | :----------------------------------------- | :---------------------------------------------------------------- |
+| Unidad de cálculo       | Una instancia **por VLAN**                 | Una instancia **por grupo de VLANs** (MSTI)                       |
+| Configuración previa    | Ninguna — cada switch decide por su cuenta | Región (nombre + revisión) y mapeo VLAN→instancia, igual en todos |
+| Root primary/secondary  | `spanning-tree vlan <id> root primary`     | `spanning-tree mst <instancia> root primary`                      |
+| Costo de enlace         | `spanning-tree vlan <id> cost <n>`         | `spanning-tree mst <instancia> cost <n>`                          |
+| Escala con muchas VLANs | Mal — una instancia por cada una           | Bien — decenas de VLANs pueden compartir pocas instancias         |
+| Convergencia            | Rápida en Rapid PVST+ (RSTP por debajo)    | Rápida — MST también corre sobre RSTP                             |
+
+En la práctica: si dos VLANs siempre van a tener la misma topología de todos
+modos (mismo root, mismos puertos bloqueados), agruparlas en la misma
+instancia de MST no pierde nada y ahorra recursos. Si de verdad necesitás
+que cada VLAN balancee carga por caminos distintos —como en el ejemplo de
+datos y voz de más arriba— conviene mapearlas a instancias distintas, tal
+como quedó SW1/SW2 arriba: instancia 1 (VLAN 10) con SW1 de raíz, instancia 2
+(VLAN 20) con SW2 de raíz.
 
 ### PortFast y BPDU guard:
 
@@ -345,5 +415,8 @@ VLAN0010
   alternate/backup ya calculados de antemano.
 - Cisco corre **una instancia por VLAN** (PVST+ / Rapid PVST+), lo que
   permite balancear carga entre enlaces redundantes.
+- **MST** agrupa varias VLANs en pocas instancias para escalar en redes con
+  muchas VLANs; a cambio, exige configurar la misma región (nombre +
+  revisión) y el mismo mapeo VLAN→instancia en todos los switches.
 - **PortFast** acelera los puertos de hosts; **BPDU guard** los protege de
   que alguien conecte ahí un switch no autorizado.

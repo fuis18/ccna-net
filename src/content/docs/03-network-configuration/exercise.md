@@ -26,11 +26,6 @@ graph TB
 - **20 Sistemas** (192.168.20.0/24)
 - **99 Administración** (192.168.99.0/24, nativa)
 
-> La conexión con otras redes (rutas estáticas y protocolos) se configura en el
-> [Módulo 4](../04-routing-protocols/), y la salida a internet en el
-> [Módulo 7](../07-ip-services/), con el tema
-> [Conexión al ISP (Enlaces WAN)](../07-ip-services/conexion-isp).
-
 ## Objetivos
 
 1. Crear y asignar las VLANs en los switches.
@@ -162,11 +157,3 @@ que las VLANs estén permitidas en él.
 
 - La red quedó segmentada (VLANs) y **funcionando de extremo a extremo**.
 - El router enruta entre VLANs por subinterfaces (router-on-a-stick).
-- La conexión con otras redes se añadirá en el [Módulo 4](../04-routing-protocols/),
-  con rutas estáticas y protocolos de enrutamiento.
-- Guarda la configuración en los tres equipos:
-  `copy running-config startup-config`.
-
-En el [Módulo 4: Protocolos de Enrutamiento](../04-routing-protocols/) conectarás
-esta red con router remotos, y en el [Módulo 5](../05-redundancy-security/) la
-harás **redundante y segura**: STP, EtherChannel, HSRP y seguridad de capa 2.

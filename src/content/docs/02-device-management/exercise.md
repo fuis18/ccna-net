@@ -55,8 +55,6 @@ SW1# show ip ssh
 SW1# show users
 ```
 
-En el módulo 3, podremos conectarnos por SSH desde una PC.
-
 ## Comprobación final
 
 | Pregunta                            | Respuesta esperada                   |
@@ -74,6 +72,3 @@ En el módulo 3, podremos conectarnos por SSH desde una PC.
 - Los tres equipos quedan con identidad, contraseñas y banner.
 - SSH está habilitado (versión 2) y las líneas remotas solo aceptan SSH.
 - La configuración se guardó en NVRAM en los tres equipos.
-
-La red aún no transmite tráfico entre áreas. En el [Módulo 3](../03-network-configuration/)
-añadirás las VLANs, el direccionamiento y el routing.

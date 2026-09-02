@@ -127,10 +127,6 @@ La IP de cada interfaz del router **es el gateway** de los hosts de esa subred.
 El router ve ambas redes como **conectadas** (código `C` en `show ip route`) y
 las enruta entre sí automáticamente.
 
-> Cuando solo tienes **un enlace** entre switch y router, pero **varias
-> VLANs**, el router no alcanza con una sola interfaz física: ahí aparecen las
-> **subinterfaces**, que verás en [Subinterfaces (Router-on-a-Stick)](./subinterfaces).
-
 ## Verificación
 
 ```ios
@@ -169,11 +165,6 @@ PC-Ventas# ping 192.168.20.5
 ```
 
 > Ventas: .10.5, Sistemas: .20.5
-
-Si responde, el direccionamiento y el enrutamiento entre VLANs funcionan. Si
-no, revisa en orden: la IP/máscara de la PC, que el **gateway** apunte a la IP
-correcta del dispositivo, que las **SVI/interfaces** estén `up/up`, y que las
-VLANs lleguen por el trunk (ver [VLANs y Trunking](./vlans-trunking)).
 
 ## Preguntas tipo CCNA
 

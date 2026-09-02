@@ -122,6 +122,9 @@ R       10.0.0.0/8 [120/1] via 192.168.1.2, 00:00:09, GigabitEthernet0/1
 Recordatorio de la selección de ruta: **prefijo más largo → menor AD → menor
 métrica** (ver [Métricas y Distancia Administrativa](../05-redundancy-security/metrics-administrative-distance)).
 
+Cuando OSPF y EIGRP conviven en la misma red, las rutas se traducen entre ellos
+con [Redistribución](./redistribution).
+
 ## Preguntas tipo CCNA
 
 1. **¿Cuál es la métrica de EIGRP y la de RIP?**
@@ -153,3 +156,12 @@ métrica** (ver [Métricas y Distancia Administrativa](../05-redundancy-security
 - Selección de ruta: **prefijo más largo → menor AD → menor métrica**.
 - Se verifica con `show ip route`, `show ip eigrp neighbors` y
   `show ip route rip` según protocolo.
+
+## Ejercicio
+
+La teoría de traducir rutas entre protocolos está en
+[Redistribución entre protocolos](./redistribution), y el
+[Ejercicio: Routing entre Redes](./exercise) la lleva a una topología de tres
+routers: **OSPF** en un tramo, **EIGRP** en el otro y redistribución en R2 — las
+rutas EIGRP entran a OSPF como `O E2` y las de OSPF a EIGRP como `D EX`
+(AD 170).

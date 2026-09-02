@@ -84,6 +84,7 @@ export default defineConfig({
             { label: 'Rutas Estáticas y Default', slug: '04-routing-protocols/static-default-routes' },
             { label: 'OSPF (Open Shortest Path First)', slug: '04-routing-protocols/ospf' },
             { label: 'EIGRP y RIP', slug: '04-routing-protocols/eigrp-rip' },
+            { label: 'Redistribución entre protocolos', slug: '04-routing-protocols/redistribution' },
             { label: 'Referencia Técnica (Cheat Sheet)', slug: '04-routing-protocols/cheat-sheet' },
             { label: 'Ejercicio: Routing entre Redes', slug: '04-routing-protocols/exercise' },
           ],

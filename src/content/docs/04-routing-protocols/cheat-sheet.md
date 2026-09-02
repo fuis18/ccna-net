@@ -1,15 +1,16 @@
 ---
 title: Cheat Sheet (Referencia Técnica)
-description: "Referencia técnica de Protocolos de Enrutamiento: rutas estáticas y default, distancia administrativa y protocolos OSPF/EIGRP/RIP."
+description: "Referencia técnica de Protocolos de Enrutamiento: rutas estáticas y default, distancia administrativa, protocolos OSPF/EIGRP/RIP y redistribución."
 ---
 
 ## Rutas en la tabla
 
-| Origen    | Código          | Cómo se aprende |
-| :-------- | :-------------- | :-------------- |
-| Conectada | `C` (local `L`) | Interfaz con IP |
-| Estática  | `S`             | `ip route`      |
-| Dinámica  | `O`/`D`/`R`     | Protocolo       |
+| Origen        | Código                   | Cómo se aprende                |
+| :------------ | :----------------------- | :----------------------------- |
+| Conectada     | `C` (local `L`)          | Interfaz con IP                |
+| Estática      | `S`                      | `ip route`                     |
+| Dinámica      | `O`/`D`/`R`              | Protocolo                      |
+| Redistribuida | `O E2` / `O E1` / `D EX` | Traducida desde otro protocolo |
 
 ## Rutas estáticas
 
@@ -39,9 +40,10 @@ ipv6 route ::/0 2001:db8:1::254
 | :---------------- | :-- |
 | Conectada         | 0   |
 | Estática          | 1   |
-| EIGRP             | 90  |
+| EIGRP (interna)   | 90  |
 | OSPF              | 110 |
 | RIP               | 120 |
+| EIGRP (externa)   | 170 |
 | Flotante (manual) | 150 |
 | iBGP              | 200 |
 
@@ -103,6 +105,9 @@ no passive-interface s0/0/1
 network 192.168.1.0 0.0.0.255
 
 no auto-summary
+exit
+
+do copy running-config startup-config
 ```
 
 - AD **90**. Métrica = (10⁷ / banda mínima + retardo total) × 256.
@@ -112,13 +117,39 @@ no auto-summary
 
 ```ios
 router rip
- version 2
- network 192.168.1.0
- no auto-summary
+version 2
+network 192.168.1.0
+no auto-summary
 ```
 
 - AD **120**. Métrica = **saltos** (máx. 15; 16 = inalcanzable).
 - Código en la tabla: `R`. Actualiza cada 30 s.
+
+## Redistribución
+
+Traduce rutas de un protocolo a otro en un router que corre ambos procesos.
+
+```ios
+# rutas EIGRP → OSPF (externas, sin métrica: quedan O E2 con métrica 20)
+router ospf 1
+redistribute eigrp 100 subnets
+
+# rutas OSPF → EIGRP (la métrica es obligatoria: banda, retardo, conf, carga, MTU)
+router eigrp 100
+no auto-summary
+redistribute ospf 1 metric 10000 100 255 1 1500
+```
+
+| Código | Significado                            | AD  |
+| :----- | :------------------------------------- | :-- |
+| `O E2` | Externa a OSPF, métrica fija (semilla) | 110 |
+| `O E1` | Externa a OSPF, suma el coste interno  | 110 |
+| `D EX` | Externa a EIGRP                        | 170 |
+
+- `subnets` es obligatorio en OSPF para no perder las subredes (sin él solo
+  redistribuye la clase mayor).
+- Dos routers que se redistribuyen **mutuamente** pueden generar bucles: hay
+  que filtrar con `route-map` o etiquetas.
 
 ## Comparativa de protocolos
 
@@ -143,11 +174,17 @@ show ip route eigrp
 show ip eigrp neighbors
 
 show ip route rip
+
+show ip route ospf      # rutas O E2 / O E1 (redistribuidas)
+show ip route eigrp     # rutas D / D EX
+show ip protocols       # qué proceso corre cada router (redistribución incluida)
 ```
 
 ## Referencias
 
-Las **VLANs, direccionamiento y subinterfaces** sobre las que se enrutan estas
+La teoría de traducir rutas entre protocolos está en
+[Redistribución entre protocolos](./redistribution). Las **VLANs,
+direccionamiento y subinterfaces** sobre las que se enrutan estas
 rutas se describen en [Configuración de Red](../03-network-configuration/),
 Módulo 3. La **redundancia y OSPF avanzado** (multi-área y punto a punto)
 continúan en [Redundancia y Seguridad](../05-redundancy-security/), Módulo 5.

@@ -34,6 +34,14 @@ saltos de RIP, con comparativa final entre los tres protocolos.
 
 - [EIGRP y RIP](./eigrp-rip)
 
+### Redistribución
+
+Qué pasa cuando dos protocolos conviven en la misma red: rutas externas
+(`O E2`, `D EX`), traducción de métricas y configuración en el router que corre
+OSPF y EIGRP a la vez.
+
+- [Redistribución entre protocolos](./redistribution)
+
 ## Repaso rápido
 
 | Concepto         | Resumen                                      |
@@ -48,9 +56,10 @@ saltos de RIP, con comparativa final entre los tres protocolos.
 
 ## Ejercicio
 
-Conecta la red del edificio con un router remoto y el ISP con el
-[Ejercicio: Routing entre redes](./exercise), que añade rutas estáticas, la ruta
-por defecto y un protocolo dinámico sobre la red ya enrutada entre VLANs.
+Levanta la red completa del módulo: VLANs y router-on-a-stick, OSPF en un
+dominio y EIGRP en el otro, con el
+[Ejercicio: Routing entre Redes](./exercise), que termina en la
+**redistribución** de rutas entre ambos protocolos en R2.
 
 Continúa con [el Módulo 5: Redundancia y Seguridad](../05-redundancy-security/)
 cuando la red enrute entre redes.
