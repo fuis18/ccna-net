@@ -105,7 +105,7 @@ export default defineConfig({
           items: [
             { label: 'Visión general del módulo', slug: '06-routing-redundancy' },
             { label: 'Métricas y Distancia Administrativa', slug: '06-routing-redundancy/metrics-administrative-distance' },
-            { label: 'OSPF avanzado (multi-área y punto a punto)', slug: '06-routing-redundancy/ospf-avanzado' },
+            { label: 'OSPF avanzado (multi-área y punto a punto)', slug: '06-routing-redundancy/ospf-advanced' },
             { label: 'First Hop Redundancy (FHRP / HSRP)', slug: '06-routing-redundancy/fhrp-hsrp' },
             { label: 'Referencia Técnica (Cheat Sheet)', slug: '06-routing-redundancy/cheat-sheet' },
             { label: 'Ejercicio: Gateway redundante', slug: '06-routing-redundancy/exercise' },

@@ -72,7 +72,7 @@ distancia administrativa), OSPF avanzado y protocolos FHRP (HSRP) para un
 gateway por defecto redundante.
 
 - [Métricas y Distancia Administrativa](06-routing-redundancy/metrics-administrative-distance)
-- [OSPF avanzado (multi-área y punto a punto)](06-routing-redundancy/ospf-avanzado)
+- [OSPF avanzado (multi-área y punto a punto)](06-routing-redundancy/ospf-advanced)
 - [First Hop Redundancy (FHRP / HSRP)](06-routing-redundancy/fhrp-hsrp)
 
 ### [7. Wireless Networks (WLAN)](07-wireless-networks/)

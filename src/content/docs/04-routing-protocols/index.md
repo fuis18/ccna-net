@@ -23,7 +23,7 @@ destino específico en la tabla de enrutamiento.
 Estado de enlace: LSA/LSDB, métrica de coste, determinación del Router ID,
 elección de DR/BDR y configuración de un área única. Los diseños avanzados
 (full-mesh punto a punto y multi-área) continúan en
-[OSPF avanzado](../06-routing-redundancy/ospf-avanzado), Módulo 6.
+[OSPF avanzado](../06-routing-redundancy/ospf-advanced), Módulo 6.
 
 - [OSPF (Open Shortest Path First)](./ospf)
 

@@ -22,7 +22,7 @@ de enrutamiento.
 Diseños que escalan la red OSPF más allá del laboratorio: full-mesh punto a
 punto sin DR/BDR y áreas con ABR resumiendo rutas.
 
-- [OSPF avanzado](./ospf-avanzado)
+- [OSPF avanzado](./ospf-advanced)
 
 ### First Hop Redundancy (FHRP / HSRP)
 
