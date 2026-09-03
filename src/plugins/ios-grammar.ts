@@ -23,7 +23,7 @@ export const iosGrammar = {
     },
     {
       match:
-        '^\\s*(enable|configure\\s+terminal|hostname|interface|int|no|switchport|vlan|username|line|password|login|transport|crypto|banner|clock|copy|show|exit|end|no\\s+shutdown|shutdown|description|bandwidth|spanning-tree|channel-group|access-list|ip|ipv6|router|network|boot\\s+system|ntp|dot11|ssh|telnet|ping|traceroute|write|reload|dir|debug|arp|cdp|lldp|logging|snmp-server)\\b',
+        '^\\s*(enable|configure\\s+terminal|hostname|interface|int|no|switchport|vlan|username|line|sw|password|login|transport|crypto|banner|clock|copy|show|exit|end|no\\s+shutdown|shutdown|description|bandwidth|spanning-tree|channel-group|access-list|ip|ipv6|router|network|boot\\s+system|ntp|dot11|ssh|telnet|ping|traceroute|write|reload|dir|debug|arp|cdp|lldp|logging|snmp-server)\\b',
       name: 'keyword.command.ios',
     },
   ],

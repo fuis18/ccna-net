@@ -344,10 +344,11 @@ conecte un switch no autorizado.
 SW1(config)# interface FastEthernet0/1
 SW1(config-if)# spanning-tree portfast
 SW1(config-if)# spanning-tree bpduguard enable
-```
 
-> `switchport host` configura access + PortFast + BPDU guard en un solo
-> comando — la combinación recomendada para cualquier puerto de usuario final.
+! Alternativa: un solo comando hace access + PortFast + BPDU guard
+SW1(config)# interface FastEthernet0/2
+SW1(config-if)# switchport host
+```
 
 ## Verificación
 

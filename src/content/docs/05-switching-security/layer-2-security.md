@@ -29,6 +29,7 @@ esnifar tráfico ajeno.
 aprender un puerto y qué hacer si aparece una de más:
 
 ```ios
+SW1(config)# int f0/1
 SW1(config-if)# switchport mode access
 SW1(config-if)# switchport port-security
 SW1(config-if)# switchport port-security maximum 2
@@ -87,9 +88,9 @@ Ocurre cuando se conecta otro router con su propio DHCP activo, respondiendo en 
 ```ios
 SW1(config)# ip dhcp snooping
 SW1(config)# ip dhcp snooping vlan 10,20
-SW1(config)# interface GigabitEthernet0/24
+SW1(config)# interface GigabitEthernet0/1
 SW1(config-if)# ip dhcp snooping trust
-SW1(config)# interface range Gi0/1 - 23
+SW1(config)# interface range f0/1 - 24
 SW1(config-if-range)# ip dhcp snooping limit rate 10
 ```
 
@@ -111,7 +112,7 @@ DHCP Snooping, además de bloquear servidores falsos, va guardando una tabla
 de bindings — qué IP le corresponde a qué MAC y en qué puerto, según lo que
 realmente entregó el servidor DHCP legítimo. Esa tabla es la base para
 resolver otro problema: un usuario reporta que, de vez en cuando, su tráfico
-tarda más de lo normal y `arp -a` en su equipo muestra que la MAC del gateway
+tarda más de lo normal y al ejecutar `arp -a` o `ip neigh` en su equipo muestra que la MAC del gateway
 cambió sin motivo. Es **ARP spoofing**: otro host en la misma VLAN está
 respondiendo con su propia MAC cuando alguien pregunta por la IP del gateway,
 para interceptar el tráfico antes de reenviarlo (man-in-the-middle).
@@ -122,7 +123,7 @@ coinciden con lo que el binding dice que debería ser, lo descarta.
 
 ```ios
 SW1(config)# ip arp inspection vlan 10,20
-SW1(config)# interface GigabitEthernet0/24
+SW1(config)# int g0/1
 SW1(config-if)# ip arp inspection trust
 ```
 
@@ -132,21 +133,24 @@ consultar, así que DAI depende de tenerlo configurado primero — o, en su
 defecto, de ARP ACLs manuales para las IPs estáticas que DHCP Snooping no
 puede ver.
 
-## IP Source Guard
+## IP Source Guard (IPSG)
 
-Con DAI en marcha, el spoofing de ARP queda cubierto, pero un host todavía
-podría cambiarse manualmente a una IP que no le corresponde — la de un
-servidor, por ejemplo — para saltarse una ACL que filtra por dirección IP.
-**IP Source Guard** cierra esa variante reutilizando otra vez el binding de
-DHCP Snooping, pero esta vez para filtrar el tráfico IP saliente del puerto,
-no solo el ARP:
+**IP Source Guard** es una función de seguridad de capa 2 que actúa como un **guardia de tránsito para el tráfico IP**. Su objetivo principal es evitar que un usuario malintencionado en la red robe o utilice una dirección IP que no le pertenece (lo que se conoce como _IP spoofing_ o suplantación de IP).
+
+A diferencia de DAI (que revisa las tramas ARP), **IP Source Guard inspecciona el tráfico IP real** que sale de un puerto de usuario.
+
+1. **Reutiliza la tabla de DHCP Snooping:** Al igual que DAI, IPSG consulta la base de datos de bindings (la relación entre la MAC, la IP y el número de puerto que se otorgó legítimamente).
+2. **Inspección en el puerto _untrusted_:** Cuando activas `ip verify source` en una interfaz con el comando:
 
 ```ios
-SW1(config-if)# ip verify source
+
+SW1(config)# int range f0/1 - 24
+SW1(config-if-range)# ip verify source
 ```
 
-Si la IP de origen de un paquete no coincide con la que el binding DHCP
-asignó a ese puerto, se descarta antes de reenviarlo.
+El switch analiza cada paquete IP que sale de ese puerto.
+
+3. **Bloqueo preventivo:** Si un usuario decide cambiar manualmente la IP de su PC (por ejemplo, poniéndose la IP de un servidor importante o de otro compañero) para saltarse reglas de seguridad o ACLs, el switch detecta que esa IP **no coincide** con la registrada en la tabla de DHCP Snooping para ese puerto específico y **descarta el paquete de inmediato**.
 
 ## Endurecimiento adicional del switch
 
@@ -154,15 +158,15 @@ El resto de controles no depende de un ataque específico detectado, sino de
 reducir la superficie disponible antes de que algo pase:
 
 ```ios
-SW1(config)# interface range Gi0/10 - 23
+SW1(config)# interface range f0/10 - 24
 SW1(config-if-range)# shutdown
 
-SW1(config)# interface Gi0/24
+SW1(config)# interface g0/1
 SW1(config-if)# switchport mode trunk
 SW1(config-if)# switchport nonegotiate
 
-SW1(config)# interface Gi0/1
-SW1(config-if)# storm-control broadcast level 20
+SW1(config)# interface range f0/1 - 9
+SW1(config-if-range)# storm-control broadcast level 20
 ```
 
 - **Puertos sin usar, apagados** (`shutdown`): un puerto libre en una sala de
